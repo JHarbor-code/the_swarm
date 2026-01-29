@@ -112,23 +112,21 @@ class ADE:
         }
 
     def compute_taille(self):
-        potentiel_genetique = 1
+        taille_score = (
+            0.6 * self.genes['croissance'] +
+            0.25 * self.genes['taille_os'] +
+            0.1 * self.genes['densite_os'] +
+        )
 
-        terms = [
-            (self.genes['croissance'], 0.5),
-            (self.genes['taille_os'], 0.3)
-        ]
+        bruit = np.random.normal(1, 0.05)  # petit bruit réaliste
+        taille_score *= bruit
 
-        for nb, exp in terms:
-            potentiel_genetique *= nb ** exp
-
-
-        sigma = self.genes['volatilite']sigma sigma / 2
-        bruit = np.random.lognormal(mean=0, sigma=sigma)
+        # normalisation
+        taille_score_norm = np.clip(taille_score, 0, 1)
 
 
-        return self.TAILLE_MAX + potentiel_genetique * bruit * (self.TAILLE_MAX - self.TAILLE_MAX) 
-    
+        return self.TAILLE_MIN + taille_score_norm * (self.TAILLE_MAX - self.TAILLE_MIN)
+
     def compute_force():
 
         return
