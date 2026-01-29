@@ -5,7 +5,6 @@ class ADE:
 
     def __init__(self, genes=None):
 
-        self.bruit_coef = random.gauss(0, 0.03)
         self.genes = self.set_genes(genes) if genes else self.set_genes()
         self.phenotype = self.set_phenotype(self.genes)
 
@@ -31,6 +30,7 @@ class ADE:
             genes['conductance_nerveuse'] = max(0, min(1, genes['conductance_nerveuse'] + random.gauss(0, 0.1)))
             genes['stockage_adipeux'] = max(0, min(1, genes['stockage_adipeux'] + random.gauss(0, 0.1)))
             genes['endurance'] = max(0, min(1, genes['endurance'] + random.gauss(0, 0.1)))
+            genes['volatilite'] = max(0, min(1, genes['volatilité'] + random.gauss(0, 0.15)))
             
             # === GÈNES MÉTABOLIQUES ===
             genes['efficacite_digestion'] = max(0, min(1, genes['efficacite_digestion'] + random.gauss(0, 0.1)))
@@ -66,6 +66,7 @@ class ADE:
                 'conductance_nerveuse': np.random.beta(2, 3),
                 'stockage_adipeux': np.random.beta(2, 3),
                 'endurance': np.random.beta(2, 3),
+                'volatilite' : np.random.beta(2, 4),
                 
                 # === GÈNES MÉTABOLIQUES ===
                 'efficacite_digestion': np.random.beta(2, 4),
@@ -89,7 +90,7 @@ class ADE:
         
         return {
             # === PHYSIQUE ===
-            "taille": self.compute_size([genes['croissance'], genes['densite_os']], [0.5, 0.3]),
+            "taille": self.compute_taille(),
             "force": "",
             "resistance_coups": "",
             "resistance_froid": "", 
@@ -109,11 +110,23 @@ class ADE:
             "distance_detection": "",
         }
 
-    def compute_size(self, genes: list[float], coefs: list[float]):
+    def compute_taille(self):
+        potentiel_genetique = 1
 
-        base = self.genes['croissance'] * self.genes['densite_os']
+        terms = [
+            (self.genes['croissance'], 0.5),
+            (self.genes['taille_os'], 0.3)
+        ]
 
-        return base * (self.BASE_TAILLE + self.bruit_coef)
+        for nb, exp in terms:
+            potentiel_genetique *= nb ** exp
+
+
+        sigma = 0.02 + 0.08 * (1 - self.genes['volatilite'])
+        bruit = np.random.lognormal(mean=0, sigma=sigma)
+
+
+        return potentiel_genetique * bruit
     
     def compute_force():
 
@@ -167,12 +180,6 @@ class ADE:
 
         return
 
-test = ADE()
-total = 0
-for i in range(10000):
-    test.set_phenotype(test.genes)
-    total += test.phenotype['taille']
 
-moy = total / 10000
-print(moy)
+
 
