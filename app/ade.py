@@ -1,5 +1,4 @@
 import numpy as np
-import random
 
 class ADE:
     BASE_TAILLE = 1
@@ -19,22 +18,34 @@ class ADE:
         if genes:
             
             # === GÈNES RÉGULATEURS ===
-            genes['growth_factor'] = max(0, min(1, genes['growth_factor'] + random.gauss(0, 0.1)))                 # évolution normale
-            genes['aggression_gene'] = max(0, min(1, genes['aggression_gene'] + random.gauss(0, 0.15)))            # évolution rapide
-            genes['social_gene'] = max(0, min(1, genes['social_gene'] + random.gauss(0, 0.15)))                    # évolution rapide
-            genes['stress_gene'] = max(0, min(1, genes['stress_gene'] + random.gauss(0, 0.15)))                    # évolution rapide
-            genes['fertility_gene'] = max(0, min(1, genes['fertility_gene'] + random.gauss(0, 0.05)))              # évolution lente
+            genes['croissance'] = max(0, min(1, genes['croissance'] + random.gauss(0, 0.1)))
+            genes['agressivite'] = max(0, min(1, genes['agressivite'] + random.gauss(0, 0.15)))
+            genes['sociabilite'] = max(0, min(1, genes['sociabilite'] + random.gauss(0, 0.15)))
+            genes['stress'] = max(0, min(1, genes['stress'] + random.gauss(0, 0.15)))
+            genes['fertilite'] = max(0, min(1, genes['fertilite'] + random.gauss(0, 0.05)))
             
             # === GÈNES STRUCTURELS ===
-            genes['muscle_fiber'] = max(0, min(1, genes['muscle_fiber'] + random.gauss(0, 0.1)))                   # évolution normale
-            genes['bone_density'] = max(0, min(1, genes['bone_density'] + random.gauss(0, 0.05)))                  # évolution lente
-            genes['bone_size'] = max(0, min(1, genes['bone_size'] + random.gauss(0, 0.05)))                        # évolution lente
-            genes['nerve_conductance'] = max(0, min(1, genes['nerve_conductance'] + random.gauss(0, 0.1)))         # évolution normale
-            genes['adipose_storage'] = max(0, min(1, genes['adipose_storage'] + random.gauss(0, 0.1)))             # évolution normale
+            genes['fibres_musculaires'] = max(0, min(1, genes['fibres_musculaires'] + random.gauss(0, 0.1)))
+            genes['densite_os'] = max(0, min(1, genes['densite_os'] + random.gauss(0, 0.05)))
+            genes['taille_os'] = max(0, min(1, genes['taille_os'] + random.gauss(0, 0.05)))
+            genes['conductance_nerveuse'] = max(0, min(1, genes['conductance_nerveuse'] + random.gauss(0, 0.1)))
+            genes['stockage_adipeux'] = max(0, min(1, genes['stockage_adipeux'] + random.gauss(0, 0.1)))
+            genes['endurance'] = max(0, min(1, genes['endurance'] + random.gauss(0, 0.1)))
             
             # === GÈNES MÉTABOLIQUES ===
-            genes['digestive_efficiency'] = max(0, min(1, genes['digestive_efficiency'] + random.gauss(0, 0.1)))   # évolution normale
-            genes['thermal_regulation'] = max(0, min(1, genes['thermal_regulation'] + random.gauss(0, 0.15)))      # évolution rapide
+            genes['efficacite_digestion'] = max(0, min(1, genes['efficacite_digestion'] + random.gauss(0, 0.1)))
+            genes['regulation_thermique'] = max(0, min(1, genes['regulation_thermique'] + random.gauss(0, 0.15)))
+            genes['consommation_energetique'] = max(0, min(1, genes['consommation_energetique'] + random.gauss(0, 0.1)))
+            genes['appetit'] = max(0, min(1, genes['appetit'] + random.gauss(0, 0.1)))
+            genes['cout_maintenance'] = max(0, min(1, genes['cout_maintenance'] + random.gauss(0, 0.1)))
+
+            # === GENES SENSORIELS ===
+            genes['qualite_vision'] = max(0, min(1, genes['qualite_vision'] + random.gauss(0, 0.1)))
+            genes['qualite_audition'] = max(0, min(1, genes['qualite_audition'] + random.gauss(0, 0.1)))
+
+            # === GENES NEUROLOGIQUES ===
+            genes['intelligence'] = max(0, min(1, genes['intelligence'] + random.gauss(0, 0.1)))
+            genes['memoire'] = max(0, min(1, genes['memoire'] + random.gauss(0, 0.1)))
 
             return genes
 
@@ -42,35 +53,35 @@ class ADE:
 
             return {
                 # === GÈNES RÉGULATEURS ===
-                'croissance': np.random.beta(2, 3),        # biaisé vers 0.4
-                'aggression_gene': np.random.beta(2, 3),      # biaisé vers 0.4
-                'social_gene': np.random.beta(3, 2),          # biaisé vers 0.6
-                'stress_gene': np.random.beta(2, 2),          # baisée vers 0.5
-                'fertilite_gene': np.random.beta(6, 1),       # biaisé vers 0.85
+                'croissance': np.random.beta(2, 3),
+                'agressivite': np.random.beta(2, 3),
+                'sociabilite': np.random.beta(3, 2),
+                'stress': np.random.beta(2, 2),
+                'fertilite': np.random.beta(6, 1),
                 
                 # === GÈNES STRUCTURELS ===
-                'fibres_musculaires': np.random.beta(2, 3),         # biaisé vers 0.4
-                'densité_os': np.random.beta(2, 3),         # biaisé vers 0.4
-                'taille_os' : np.random.beta(2, 2),           # baisée vers 0.5
-                'conductance_nerveuse': np.random.beta(2, 3),    # biaisé vers 0.4
-                'stockage_adipeux ': np.random.beta(2, 3),      # biaisé vers 0.4
-                'endurance' : np.random.beta(2, 3),           # biaisé vers 0.4
+                'fibres_musculaires': np.random.beta(2, 3),
+                'densite_os': np.random.beta(2, 3),
+                'taille_os': np.random.beta(2, 2),
+                'conductance_nerveuse': np.random.beta(2, 3),
+                'stockage_adipeux': np.random.beta(2, 3),
+                'endurance': np.random.beta(2, 3),
                 
                 # === GÈNES MÉTABOLIQUES ===
-                'efficacite_digestion': np.random.beta(2, 4), # biaisé vers 0.35
-                'regulation_thermique': np.random.beta(2, 5),   # biaisé vers 0.20
-                'consommation_energetique': np.random.beta(2, 3),       # biaisé vers 0.4
-                'appetit': np.random.beta(2, 2),             # biaisé vers 0.5 
-                'maintenance_cost' : np.random.beta(2, 4),    # biaisé vers 0.35
+                'efficacite_digestion': np.random.beta(2, 4),
+                'regulation_thermique': np.random.beta(2, 5),
+                'consommation_energetique': np.random.beta(2, 3),
+                'appetit': np.random.beta(2, 2),
+                'cout_maintenance': np.random.beta(2, 4),
 
                 # === GENES SENSORIELS ===
-                'qualité_vision' : np.random.beta(2, 2),      # biaisé vers 0.5
-                'qualité_audition' : np.random.beta(2, 2),     # biaisé vers 0.5
+                'qualite_vision': np.random.beta(2, 2),
+                'qualite_audition': np.random.beta(2, 2),
 
                 # === GENES NEUROLOGIQUES ===
-                'intelligence' : np.random.beta(2, 2), # biaisé vers 0.5
-                'memory' : np.random.beta(2, 2)               # biaisé vers 0.5
-                }
+                'intelligence': np.random.beta(2, 2),
+                'memoire': np.random.beta(2, 2)
+            }
 
 
     
@@ -78,29 +89,29 @@ class ADE:
         
         return {
             # === PHYSIQUE ===
-            "taille" : self.compute_size([genes['growth_factor'], genes['bone_density']], [0.5, 0.3]),
-            "force" : "",
-            "resistance_coups" : "",
-            "resistance_froid" : "", 
-            "vitesse" : "",
+            "taille": self.compute_size([genes['croissance'], genes['densite_os']], [0.5, 0.3]),
+            "force": "",
+            "resistance_coups": "",
+            "resistance_froid": "", 
+            "vitesse": "",
             
             # === COMPORTEMENTAUX ===
-            "agressivite" : "",
-            "altruisme" : "",
-            "courage" : "",
-            "memoire" : "",
-            "rancune" : "",
+            "agressivite": "",
+            "altruisme": "",
+            "courage": "",
+            "memoire": "",
+            "rancune": "",
 
             # === SURVIE === 
-            "cout_energetique" : "",
-            "fertilite" : "",
-            "temps_de_reaction" : "",
-            "distance_détection" : "",
-            }
+            "cout_energetique": "",
+            "fertilite": "",
+            "temps_de_reaction": "",
+            "distance_detection": "",
+        }
 
     def compute_size(self, genes: list[float], coefs: list[float]):
 
-        base = self.genes['growth_factor'] * self.genes['bone_density']
+        base = self.genes['croissance'] * self.genes['densite_os']
 
         return base * (self.BASE_TAILLE + self.bruit_coef)
     
