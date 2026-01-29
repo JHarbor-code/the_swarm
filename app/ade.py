@@ -30,7 +30,7 @@ class ADE:
             genes['conductance_nerveuse'] = max(0, min(1, genes['conductance_nerveuse'] + random.gauss(0, 0.1)))
             genes['stockage_adipeux'] = max(0, min(1, genes['stockage_adipeux'] + random.gauss(0, 0.1)))
             genes['endurance'] = max(0, min(1, genes['endurance'] + random.gauss(0, 0.1)))
-            genes['volatilite'] = max(0, min(1, genes['volatilité'] + random.gauss(0, 0.15)))
+            genes['volatilite'] = max(0, min(1, genes['volatilite'] + random.gauss(0, 0.15)))
             
             # === GÈNES MÉTABOLIQUES ===
             genes['efficacite_digestion'] = max(0, min(1, genes['efficacite_digestion'] + random.gauss(0, 0.1)))
@@ -122,7 +122,7 @@ class ADE:
             potentiel_genetique *= nb ** exp
 
 
-        sigma = 0.02 + 0.08 * (1 - self.genes['volatilite'])
+        sigma = self.genes['volatilite']
         bruit = np.random.lognormal(mean=0, sigma=sigma)
 
 
