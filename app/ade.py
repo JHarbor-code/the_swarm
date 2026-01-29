@@ -1,10 +1,11 @@
 import numpy as np
 
 class ADE:
-    BASE_TAILLE = 1
 
     def __init__(self, genes=None):
 
+        self.TAILLE_MIN = 1.30
+        self.TAILLE_MAX = 2.90
         self.genes = self.set_genes(genes) if genes else self.set_genes()
         self.phenotype = self.set_phenotype(self.genes)
 
@@ -122,11 +123,11 @@ class ADE:
             potentiel_genetique *= nb ** exp
 
 
-        sigma = self.genes['volatilite']
+        sigma = self.genes['volatilite']sigma sigma / 2
         bruit = np.random.lognormal(mean=0, sigma=sigma)
 
 
-        return potentiel_genetique * bruit
+        return self.TAILLE_MAX + potentiel_genetique * bruit * (self.TAILLE_MAX - self.TAILLE_MAX) 
     
     def compute_force():
 
