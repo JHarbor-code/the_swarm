@@ -1,11 +1,12 @@
 import numpy as np
+import random
 
 class ADE:
 
     def __init__(self, genes=None):
 
-        self.TAILLE_MIN = 1.30
-        self.TAILLE_MAX = 2.90
+        self.TAILLE_MIN = 0.5
+        self.TAILLE_MAX = 1.60
         self.genes = self.set_genes(genes) if genes else self.set_genes()
         self.phenotype = self.set_phenotype(self.genes)
 
@@ -92,10 +93,11 @@ class ADE:
         return {
             # === PHYSIQUE ===
             "taille": self.compute_taille(),
-            "force": "",
+            "force": self.compute_force(),
             "resistance_coups": "",
             "resistance_froid": "", 
             "vitesse": "",
+            "esperance_de_vie" : "",
             
             # === COMPORTEMENTAUX ===
             "agressivite": "",
@@ -109,25 +111,24 @@ class ADE:
             "fertilite": "",
             "temps_de_reaction": "",
             "distance_detection": "",
+            "discretion" : ""
         }
 
     def compute_taille(self):
-        taille_score = (
-            0.6 * self.genes['croissance'] +
-            0.25 * self.genes['taille_os'] +
-            0.1 * self.genes['densite_os'] +
-        )
 
-        bruit = np.random.normal(1, 0.05)  # petit bruit réaliste
+        taille_score = 0.6 * self.genes['croissance'] + 0.25 * self.genes['taille_os'] + 0.1 * self.genes['densite_os'] 
+
+        bruit = np.random.normal(1, 0.05)  
         taille_score *= bruit
 
-        # normalisation
         taille_score_norm = np.clip(taille_score, 0, 1)
-
 
         return self.TAILLE_MIN + taille_score_norm * (self.TAILLE_MAX - self.TAILLE_MIN)
 
+    
     def compute_force():
+
+        force_score = 
 
         return
     
@@ -182,3 +183,5 @@ class ADE:
 
 
 
+test = ADE()
+print(test.phenotype)
