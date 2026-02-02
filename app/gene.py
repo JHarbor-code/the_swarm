@@ -20,7 +20,7 @@ class Gene:
         self.allele2 = allele2
 
     @classmethod
-    def creer_fondateurs(cls):
+    def creer_fondateurs(cls) -> Gene:
 
         if not cls.alleles_possibles:
             liste = []
@@ -57,6 +57,7 @@ class Gene:
             ref, alt = a2, a1
 
         h = alt.dominance
+
         return ref.valeur + h * (alt.valeur - ref.valeur)
     
         
