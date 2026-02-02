@@ -1,4 +1,3 @@
-from __future__ import annotations
 from dataclasses import dataclass
 import numpy as np
 
@@ -12,15 +11,17 @@ class Allele:
 
 class Gene: 
 
-    alleles_possibles: list[Allele] = None
+    alleles_possibles: list[Allele] = []
 
     def __init__(self, allele1: Allele, allele2: Allele):
 
         self.allele1 = allele1
         self.allele2 = allele2
 
+        self.expression = self.calculer_expression()
+
     @classmethod
-    def creer_fondateurs(cls) -> Gene:
+    def creer_fondateurs(cls) -> "Gene":
 
         if not cls.alleles_possibles:
             liste = []
@@ -102,7 +103,7 @@ class Gene:
         return allele
 
     @classmethod
-    def heriter(cls, gene1: Gene, gene2: Gene) -> Gene:
+    def heriter(cls, gene1: "Gene", gene2: "Gene") -> "Gene":
         """
         Gère l'héritage des gènes selon l'héritage biparental. 
         
@@ -154,242 +155,254 @@ class Gene:
         
         else: 
             return allele
+        
+    def __repr__(self):
+        # Affiche les allèles et l’expression du gène
+        return (f"{self.__class__.__name__}"
+                f"(expr={self.expression:.2f}, "
+                f"{self.allele1.name}:{self.allele1.valeur:.2f}, "
+                f"{self.allele2.name}:{self.allele2.valeur:.2f})")
+
+    def __str__(self):
+        # Affiche juste l’expression, plus lisible
+        return f"{self.__class__.__name__}({self.expression:.2f})"
+
 
 
 
 # === NEURO-TRANSMETTEURS / HORMONES ===
 
 class ProdSerotonine(Gene):
-    pass
+    alleles_possibles = []
 
 class RecepSerotonine(Gene):
-    pass
+    alleles_possibles = []
 
 class ProdDopamine(Gene):
-    pass
+    alleles_possibles = []
 
 class RecepDopamine(Gene):
-    pass
+    alleles_possibles = []
 
 class ProdTestosterone(Gene):
-    pass
+    alleles_possibles = []
 
 class RecepTestosterone(Gene):
-    pass
+    alleles_possibles = []
 
 class ProdOcytocine(Gene):
-    pass
+    alleles_possibles = []
 
 class RecepOcytocine(Gene):
-    pass
+    alleles_possibles = []
 
 class ProdVasopressine(Gene):
-    pass
+    alleles_possibles = []
 
 class RecepVasopressine(Gene):
-    pass
+    alleles_possibles = []
 
 class ProdCortisol(Gene):
-    pass
+    alleles_possibles = []
 
 class RecepCortisol(Gene):
-    pass
+    alleles_possibles = []
 
 
 # === STRUCTURE CEREBRALE ===
 class DensiteGraisseBrune(Gene):
-    pass
+    alleles_possibles = []
 
 class VasoconstrictionPeripherique(Gene):
-    pass
+    alleles_possibles = []
 
 class DensiteGlandesSudoripares(Gene):
-    pass
+    alleles_possibles = []
 
 class RegulationThermiqueActive(Gene):
-    pass
+    alleles_possibles = []
 
 class RatioCortexPrefrontalAmygdale(Gene):
-    pass
+    alleles_possibles = []
 
 class ReactiviteAmygdale(Gene):
-    pass
+    alleles_possibles = []
 
 class VolumeHippocampe(Gene):
-    pass
+    alleles_possibles = []
 
 class PlasticiteSynaptique(Gene):
-    pass
+    alleles_possibles = []
 
 class DensiteNeuronesMiroirs(Gene):
-    pass
+    alleles_possibles = []
 
 class TraitementSensorielCortical(Gene):
-    pass
+    alleles_possibles = []
 
 class VolumeMatiereBlanche(Gene):
-    pass
+    alleles_possibles = []
 
 
 # === NEUROPHYSIOLOGIE ===
 
 class ConductanceNerveuse(Gene):
-    pass
+    alleles_possibles = []
 
 class DensiteCanauxIoniques(Gene):
-    pass
+    alleles_possibles = []
 
 class VoieGlutamatergique(Gene):
-    pass
+    alleles_possibles = []
 
 class EfficaciteJonctionsNeuromusculaires(Gene):
-    pass
+    pasalleles_possibles = []
 
 
 # === MUSCLE / FORCE / MOUVEMENT ===
 
 class ProportionFibresMusculaires(Gene):
-    pass
+    alleles_possibles = []
 
 class ProportionFibresRapides(Gene):
-    pass
+    alleles_possibles = []
 
 class ProportionFibresLentes(Gene):
-    pass
+    alleles_possibles = []
 
 class SectionTransversaleMuscle(Gene):
-    pass
+    alleles_possibles = []
 
 class MasseMusculaire(Gene):
-    pass
+    alleles_possibles = []
 
 
 # === OS / STRUCTURE / TAILLE === 
 
 class DensiteOsseuse(Gene):
-    pass
+    alleles_possibles = []
 
 class TailleOsseuse(Gene):
-    pass
+    alleles_possibles = []
 
 class LongueurLeviersOsseux(Gene):
-    pass
+    alleles_possibles = []
 
 class TailleGlobale(Gene):
-    pass
+    alleles_possibles = []
 
 
 # === METABOLISME ===
 
 class EfficaciteMitochondriale(Gene):
-    pass
+    alleles_possibles = []
 
 class TauxMetaboliqueBasal(Gene):
-    pass
+    alleles_possibles = []
 
 class StockageGlycogene(Gene):
-    pass
+    alleles_possibles = []
 
 class StockageAdipeux(Gene):
-    pass
+    alleles_possibles = []
 
 class EfficaciteDigestive(Gene):
-    pass
+    alleles_possibles = []
 
 class RegulationLactate(Gene):
-    pass
+    alleles_possibles = []
 
 
 # === CARDIO / RESPIRATION ===
 
 class CapacitePulmonaire(Gene):
-    pass
+    alleles_possibles = []
 
 class EfficaciteCardiovasculaire(Gene):
-    pass
+    alleles_possibles = []
 
 
 # === IMMUNITE ===
 
 class ReactiviteSystemeImmunitaire(Gene):
-    pass
+    alleles_possibles = []
 
 class ProductionAnticorps(Gene):
-    pass
+    alleles_possibles = []
 
 class DiversiteCMH(Gene):
-    pass
+    alleles_possibles = []
 
 class ProductionPeptidesAntimicrobiens(Gene):
-    pass
+    alleles_possibles = []
 
 class RegulationInflammation(Gene):
-    pass
+    alleles_possibles = []
 
 class CapaciteReparationTissulaire(Gene):
-    pass
+    alleles_possibles = []
 
 class ReactiviteCoagulation(Gene):
-    pass
+    alleles_possibles = []
 
 
 # === THERMOREGULATION ===
 
 class DensiteGraisseBrune(Gene):
-    pass
+    alleles_possibles = []
 
 class VasoconstrictionPeripherique(Gene):
-    pass
+    alleles_possibles = []
 
 class DensiteGlandesSudoripares(Gene):
-    pass
+    alleles_possibles = []
 
 class RegulationThermiqueActive(Gene):
-    pass
+    alleles_possibles = []
 
 
 # === SENSORIELS ===
 
 class DensitePhotorcepteurs(Gene):
-    pass
+    alleles_possibles = []
 
 class AcuiteRetinienne(Gene):
-    pass
+    alleles_possibles = []
 
 class SensibiliteCellulesAuditives(Gene):
-    pass
+    alleles_possibles = []
 
 class TailleGlobeOculaire(Gene):
-    pass
+    alleles_possibles = []
 
 
 # === VIE ===
 
 class LongueurTelomeres(Gene):
-    pass
+    alleles_possibles = []
 
 class EfficaciteReparationADN(Gene):
-    pass
+    alleles_possibles = []
 
 class ResistanceStressOxydatif(Gene):
-    pass
+    alleles_possibles = []
 
 class AutophagieCellulaire(Gene):
-    pass
+    alleles_possibles = []
 
 class ApoptoseCellulesDefectueuses(Gene):
-    pass
+    alleles_possibles = []
 
 class ProductionGametes(Gene):
-    pass
+    alleles_possibles = []
 
 class QualiteGametes(Gene):
-    pass
+    alleles_possibles = []
 
 
 # === COMPORTEMENT === 
 
 class MAOA(Gene):
-    pass
+    alleles_possibles = []
 
 
