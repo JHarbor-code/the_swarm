@@ -12,15 +12,42 @@ class Allele:
 
 class Gene: 
 
-    alleles_possibles: list[Allele] = []
+    alleles_possibles: list[Allele] = None
 
     def __init__(self, allele1: Allele, allele2: Allele):
 
         self.allele1 = allele1
         self.allele2 = allele2
 
+    @classmethod
+    def creer_fondateurs(cls):
 
-    def calculer_expression(self):
+        if not cls.alleles_possibles:
+            liste = []
+            for _ in range(np.random.randint(3, 8)):
+                
+                valeur = np.random.beta(2, 2)
+
+                liste.append(valeur)
+
+            for valeur in liste:
+                cls.ajouter_allele(valeur=valeur)
+
+        return cls(
+            np.random.choice(cls.alleles_possibles),
+            np.random.choice(cls.alleles_possibles)
+        )
+
+
+    def calculer_expression(self) -> float:
+        """
+        Calcule l'expression du gène en prenant en code une forme de dominance linéaire entre allèles (attribut `dominance`)
+
+        Returns: 
+            float: l'expression du gène comprise entre 0 et 1
+        
+        :param self: Description
+        """
         
         a1, a2 = self.allele1, self.allele2
 
@@ -128,40 +155,240 @@ class Gene:
             return allele
 
 
-    @classmethod
-    def init_alleles_liste(cls):
-        """
-        initialise cls.alleles_possibles pour le gène en la remplissant aléatoirement si elle est vide.
-        """
 
-        if len(cls.alleles_possibles) == 0:
-            
-            liste = cls.creer_alleles_base()
+# === NEURO-TRANSMETTEURS / HORMONES ===
 
-            for valeur in liste:
-
-                cls.ajouter_allele(valeur=valeur)
-
-                
-    
-    @classmethod
-    def creer_alleles_base(cls) -> list[float]:
-        """
-        Crée une liste d'un nombre aléatoire de valeurs d'allèle (centrées autour de 0.5 avec distribution beta)
-        """
-        
-        liste = []
-        for _ in range(np.random.randint(3, 8)):
-            
-            valeur = np.random.beta(2, 2)
-
-            liste.append(valeur)
-
-        return liste
-
-
-
-
-class Recep_Serotonine(Gene):
+class ProdSerotonine(Gene):
     pass
+
+class RecepSerotonine(Gene):
+    pass
+
+class ProdDopamine(Gene):
+    pass
+
+class RecepDopamine(Gene):
+    pass
+
+class ProdTestosterone(Gene):
+    pass
+
+class RecepTestosterone(Gene):
+    pass
+
+class ProdOcytocine(Gene):
+    pass
+
+class RecepOcytocine(Gene):
+    pass
+
+class ProdVasopressine(Gene):
+    pass
+
+class RecepVasopressine(Gene):
+    pass
+
+class ProdCortisol(Gene):
+    pass
+
+class RecepCortisol(Gene):
+    pass
+
+
+# === STRUCTURE CEREBRALE ===
+class DensiteGraisseBrune(Gene):
+    pass
+
+class VasoconstrictionPeripherique(Gene):
+    pass
+
+class DensiteGlandesSudoripares(Gene):
+    pass
+
+class RegulationThermiqueActive(Gene):
+    pass
+
+class RatioCortexPrefrontalAmygdale(Gene):
+    pass
+
+class ReactiviteAmygdale(Gene):
+    pass
+
+class VolumeHippocampe(Gene):
+    pass
+
+class PlasticiteSynaptique(Gene):
+    pass
+
+class DensiteNeuronesMiroirs(Gene):
+    pass
+
+class TraitementSensorielCortical(Gene):
+    pass
+
+class VolumeMatiereBlanche(Gene):
+    pass
+
+
+# === NEUROPHYSIOLOGIE ===
+
+class ConductanceNerveuse(Gene):
+    pass
+
+class DensiteCanauxIoniques(Gene):
+    pass
+
+class VoieGlutamatergique(Gene):
+    pass
+
+class EfficaciteJonctionsNeuromusculaires(Gene):
+    pass
+
+
+# === MUSCLE / FORCE / MOUVEMENT ===
+
+class ProportionFibresMusculaires(Gene):
+    pass
+
+class ProportionFibresRapides(Gene):
+    pass
+
+class ProportionFibresLentes(Gene):
+    pass
+
+class SectionTransversaleMuscle(Gene):
+    pass
+
+class MasseMusculaire(Gene):
+    pass
+
+
+# === OS / STRUCTURE / TAILLE === 
+
+class DensiteOsseuse(Gene):
+    pass
+
+class TailleOsseuse(Gene):
+    pass
+
+class LongueurLeviersOsseux(Gene):
+    pass
+
+class TailleGlobale(Gene):
+    pass
+
+
+# === METABOLISME ===
+
+class EfficaciteMitochondriale(Gene):
+    pass
+
+class TauxMetaboliqueBasal(Gene):
+    pass
+
+class StockageGlycogene(Gene):
+    pass
+
+class StockageAdipeux(Gene):
+    pass
+
+class EfficaciteDigestive(Gene):
+    pass
+
+class RegulationLactate(Gene):
+    pass
+
+
+# === CARDIO / RESPIRATION ===
+
+class CapacitePulmonaire(Gene):
+    pass
+
+class EfficaciteCardiovasculaire(Gene):
+    pass
+
+
+# === IMMUNITE ===
+
+class ReactiviteSystemeImmunitaire(Gene):
+    pass
+
+class ProductionAnticorps(Gene):
+    pass
+
+class DiversiteCMH(Gene):
+    pass
+
+class ProductionPeptidesAntimicrobiens(Gene):
+    pass
+
+class RegulationInflammation(Gene):
+    pass
+
+class CapaciteReparationTissulaire(Gene):
+    pass
+
+class ReactiviteCoagulation(Gene):
+    pass
+
+
+# === THERMOREGULATION ===
+
+class DensiteGraisseBrune(Gene):
+    pass
+
+class VasoconstrictionPeripherique(Gene):
+    pass
+
+class DensiteGlandesSudoripares(Gene):
+    pass
+
+class RegulationThermiqueActive(Gene):
+    pass
+
+
+# === SENSORIELS ===
+
+class DensitePhotorcepteurs(Gene):
+    pass
+
+class AcuiteRetinienne(Gene):
+    pass
+
+class SensibiliteCellulesAuditives(Gene):
+    pass
+
+class TailleGlobeOculaire(Gene):
+    pass
+
+
+# === VIE ===
+
+class LongueurTelomeres(Gene):
+    pass
+
+class EfficaciteReparationADN(Gene):
+    pass
+
+class ResistanceStressOxydatif(Gene):
+    pass
+
+class AutophagieCellulaire(Gene):
+    pass
+
+class ApoptoseCellulesDefectueuses(Gene):
+    pass
+
+class ProductionGametes(Gene):
+    pass
+
+class QualiteGametes(Gene):
+    pass
+
+
+# === COMPORTEMENT === 
+
+class MAOA(Gene):
+    pass
+
 

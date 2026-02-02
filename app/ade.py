@@ -1,5 +1,97 @@
 import numpy as np
 import random
+import gene as gn
+from pydantic import BaseModel, ValidationError
+
+class GenesDict(BaseModel):
+    # Neurotransmetteurs & hormones
+    prod_serotonine: gn.ProdSerotonine
+    recep_serotonine: gn.RecepSerotonine
+    prod_dopamine: gn.ProdDopamine
+    recep_dopamine: gn.RecepDopamine
+    prod_testosterone: gn.ProdTestosterone
+    recep_testosterone: gn.RecepTestosterone
+    prod_oxytocine: gn.ProdOcytocine
+    recep_oxytocine: gn.RecepOcytocine
+    prod_vasopressine: gn.ProdVasopressine
+    recep_vasopressine: gn.RecepVasopressine
+    prod_cortisol: gn.ProdCortisol
+    recep_cortisol: gn.RecepCortisol
+
+    # Structures cérébrales & traitement
+    ratio_cortex_prefrontal_amygdale: gn.RatioCortexPrefrontalAmygdale
+    reactivite_amygdale: gn.ReactiviteAmygdale
+    volume_hippocampe: gn.VolumeHippocampe
+    plasticite_synaptique: gn.PlasticiteSynaptique
+    densite_neurones_miroirs: gn.DensiteNeuronesMiroirs
+    traitement_sensoriel_cortical: gn.TraitementSensorielCortical
+    volume_matiere_blanche: gn.VolumeMatiereBlanche
+
+    # Neurophysiologie
+    conductance_nerveuse: gn.ConductanceNerveuse
+    densite_canaux_ioniques: gn.DensiteCanauxIoniques
+    voie_glutamatergique: gn.VoieGlutamatergique
+    efficacite_jonctions_neuromusculaires: gn.EfficaciteJonctionsNeuromusculaires
+
+    # Muscle, force, mouvement
+    proportion_fibres_musculaires: gn.ProportionFibresMusculaires
+    proportion_fibres_rapides: gn.ProportionFibresRapides
+    proportion_fibres_lentes: gn.ProportionFibresLentes
+    section_transversale_muscle: gn.SectionTransversaleMuscle
+    masse_musculaire: gn.MasseMusculaire
+
+    # Os, structure, taille
+    densite_osseuse: gn.DensiteOsseuse
+    taille_osseuse: gn.TailleOsseuse
+    longueur_leviers_osseux: gn.LongueurLeviersOsseux
+    taille_globale: gn.TailleGlobale
+
+    # Métabolisme & énergie
+    efficacite_mitochondriale: gn.EfficaciteMitochondriale
+    taux_metabolique_basal: gn.TauxMetaboliqueBasal
+    stockage_glycogene: gn.StockageGlycogene
+    stockage_adipeux: gn.StockageAdipeux
+    efficacite_digestive: gn.EfficaciteDigestive
+    regulation_lactate: gn.RegulationLactate
+
+    # Cardio / respiration
+    capacite_pulmonaire: gn.CapacitePulmonaire
+    efficacite_cardiovasculaire: gn.EfficaciteCardiovasculaire
+
+    # Immunité & réparation
+    reactivite_systeme_immunitaire: gn.ReactiviteSystemeImmunitaire
+    production_anticorps: gn.ProductionAnticorps
+    diversite_cmh: gn.DiversiteCMH
+    production_peptides_antimicrobiens: gn.ProductionPeptidesAntimicrobiens
+    regulation_inflammation: gn.RegulationInflammation
+    capacite_reparation_tissulaire: gn.CapaciteReparationTissulaire
+    reactivite_coagulation: gn.ReactiviteCoagulation
+
+    # Thermorégulation
+    densite_graisse_brun: gn.DensiteGraisseBrune
+    vasoconstriction_peripherique: gn.VasoconstrictionPeripherique
+    densite_glandes_sudoripares: gn.DensiteGlandesSudoripares
+    regulation_thermique_active: gn.RegulationThermiqueActive
+
+    # Sensoriel
+    densite_photorcepteurs: gn.DensitePhotorcepteurs
+    acuite_retinienne: gn.AcuiteRetinienne
+    sensibilite_cellules_auditives: gn.SensibiliteCellulesAuditives
+    taille_globe_oculaire: gn.TailleGlobeOculaire
+
+    # Vie, vieillissement, fertilité
+    longueur_telomeres: gn.LongueurTelomeres
+    efficacite_reparation_adn: gn.EfficaciteReparationADN
+    resistance_stress_oxydatif: gn.ResistanceStressOxydatif
+    autophagie_cellulaire: gn.AutophagieCellulaire
+    apoptose_cellules_defectueuses: gn.ApoptoseCellulesDefectueuses
+    production_gametes: gn.ProductionGametes
+    qualite_gametes: gn.QualiteGametes
+
+    # Psycho-comportemental
+    maoa: gn.MAOA
+
+
 
 class ADE:
 
@@ -11,11 +103,12 @@ class ADE:
         self.phenotype = self.set_phenotype(self.genes)
 
 
-    def set_genes(self, genes=None):
+    def set_genes(self, genes_parent1=None, genes_parent2=None):
         """
         Définit les gènes (immutables) de l'ADE
         """
 
+        recep_serotonine = Recep_Serotonine.heriter(genes_parent1['recep_serotonine'], genes_parent2["recep_serotonine"])
         if genes:
             
             # === GÈNES RÉGULATEURS ===
