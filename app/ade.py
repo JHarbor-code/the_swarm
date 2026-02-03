@@ -205,9 +205,27 @@ class ADE:
 
         return
     
-    def compute_agressivite():
+    def compute_agressivite(self):
 
-        return
+        effet_testosterone = 0.5*self.genes.prod_testosterone + 0.5*self.genes.recep_testosterone
+        effet_serotonine = 0.5*self.genes.prod_serotonine + 0.5*self.genes.recep_serotonine
+
+        score = (
+            effet_testosterone
+            - 0.7*effet_serotonine 
+            + 0.4*self.genes.ratio_cortex_prefrontal_amygdale 
+            + 0.3*self.genes.maoa
+            + 0.2*self.genes.reactivite_amygdale
+            + 0.15*self.genes.recep_vasopressine
+            + 0.15*self.genes.voie_glutamatergique
+        )
+
+        bruit = np.random.normal(1, 0.05)  
+        score *= bruit
+        score -= 0.5
+        score = np.clip(score, 0, 1)
+
+        return score
     
     def compute_altruisme():
 
