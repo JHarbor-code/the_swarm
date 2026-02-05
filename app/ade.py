@@ -166,6 +166,49 @@ class ADE:
             "distance_detection": "",
             "discretion" : ""
         }
+    
+    def calculer_phenotype(self, genes: tuple, poids: tuple):
+
+        effet_serotonine = (
+            0.5*self.genes.prod_serotonine.expression 
+            + 0.5*self.genes.recep_serotonine.expression
+        )
+        effet_cortisol = (
+            0.5*self.genes.prod_cortisol.expression 
+            + 0.5*self.genes.recep_cortisol.expression
+        )
+        effet_dopamine = (
+            0.5*self.genes.prod_dopamine.expression
+            + 0.5*self.genes.recep_dopamine.expression
+        )
+        effet_testosterone = (
+            0.5*self.genes.prod_testosterone.expression 
+            + 0.5*self.genes.recep_testosterone.expression
+        )
+
+        score_brut = (
+            -0.5*self.genes.reactivite_amygdale.expression
+            + 0.5*self.genes.ratio_cortex_prefrontal_amygdale.expression
+            + 0.4*effet_cortisol
+            + 0.4*effet_serotonine
+            + 0.3*effet_dopamine
+            - 0.3*effet_testosterone
+    
+        )
+
+        # calculés à modification des poids à reprendre en compte après chaque modification
+        for p in poids:
+        MIN_THEO = 4
+        MAX_THEO = 1.9
+        
+        # action hypothétique d'autres gènes non-représentés 
+        SIGMA_BRUT = 0.05 * (MAX_THEO - MIN_THEO)
+        score_brut += np.random.normal(0, SIGMA_BRUT)
+
+        # normalisation entre [0;1]
+        score_genetique = (score_brut - MIN_THEO) / (MAX_THEO - MIN_THEO)
+
+        return np.clip(score_genetique, 0, 1)
 
     def compute_taille(self):
 
@@ -285,6 +328,10 @@ class ADE:
             0.5*self.genes.prod_cortisol.expression 
             + 0.5*self.genes.recep_cortisol.expression
         )
+        effet_dopamine = (
+            0.5*self.genes.prod_dopamine.expression
+            + 0.5*self.genes.recep_dopamine.expression
+        )
         effet_testosterone = (
             0.5*self.genes.prod_testosterone.expression 
             + 0.5*self.genes.recep_testosterone.expression
@@ -292,18 +339,17 @@ class ADE:
 
         score_brut = (
             -0.5*self.genes.reactivite_amygdale.expression
-            + 0.5*self.genes.ratio_cortex_prefrontal_amygdale
+            + 0.5*self.genes.ratio_cortex_prefrontal_amygdale.expression
             + 0.4*effet_cortisol
-            + 0.6*self.genes.densite_neurones_miroirs.expression
             + 0.4*effet_serotonine
-            + 0.3*self.genes.ratio_cortex_prefrontal_amygdale.expression
+            + 0.3*effet_dopamine
             - 0.3*effet_testosterone
-            + 0.15*effet_vasopressine
+    
         )
 
         # calculés à partir des poids à reprendre en compte après chaque modification
-        MIN_THEO = -0.3
-        MAX_THEO = 2.15
+        MIN_THEO = -0.5
+        MAX_THEO = 1.9
         
         # action hypothétique d'autres gènes non-représentés 
         SIGMA_BRUT = 0.05 * (MAX_THEO - MIN_THEO)
@@ -316,7 +362,45 @@ class ADE:
     
     def compute_memoire():
 
-        return
+        effet_serotonine = (
+            0.5*self.genes.prod_serotonine.expression 
+            + 0.5*self.genes.recep_serotonine.expression
+        )
+        effet_cortisol = (
+            0.5*self.genes.prod_cortisol.expression 
+            + 0.5*self.genes.recep_cortisol.expression
+        )
+        effet_dopamine = (
+            0.5*self.genes.prod_dopamine.expression
+            + 0.5*self.genes.recep_dopamine.expression
+        )
+        effet_testosterone = (
+            0.5*self.genes.prod_testosterone.expression 
+            + 0.5*self.genes.recep_testosterone.expression
+        )
+
+        score_brut = (
+            -0.5*self.genes.reactivite_amygdale.expression
+            + 0.5*self.genes.ratio_cortex_prefrontal_amygdale.expression
+            + 0.4*effet_cortisol
+            + 0.4*effet_serotonine
+            + 0.3*effet_dopamine
+            - 0.3*effet_testosterone
+    
+        )
+
+        # calculés à partir des poids à reprendre en compte après chaque modification
+        MIN_THEO = -0.5
+        MAX_THEO = 1.9
+        
+        # action hypothétique d'autres gènes non-représentés 
+        SIGMA_BRUT = 0.05 * (MAX_THEO - MIN_THEO)
+        score_brut += np.random.normal(0, SIGMA_BRUT)
+
+        # normalisation entre [0;1]
+        score_genetique = (score_brut - MIN_THEO) / (MAX_THEO - MIN_THEO)
+
+        return np.clip(score_genetique, 0, 1)
     
     def compute_rancune():
 
