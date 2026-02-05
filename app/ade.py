@@ -23,6 +23,11 @@ class GenesDict(BaseModel):
     recep_vasopressine: gn.RecepVasopressine
     prod_cortisol: gn.ProdCortisol
     recep_cortisol: gn.RecepCortisol
+    prod_croissance: gn.ProdCroissance
+    recep_croissance: gn.RecepCroissance
+    prod_igf1 = gn.ProdIGF1
+    recep_igf1 = gn.RecepIGF1
+
 
     # Structures cérébrales & traitement
     ratio_cortex_prefrontal_amygdale: gn.RatioCortexPrefrontalAmygdale
@@ -50,7 +55,6 @@ class GenesDict(BaseModel):
     densite_osseuse: gn.DensiteOsseuse
     taille_osseuse: gn.TailleOsseuse
     longueur_leviers_osseux: gn.LongueurLeviersOsseux
-    taille_globale: gn.TailleGlobale
 
     # Métabolisme & énergie
     efficacite_mitochondriale: gn.EfficaciteMitochondriale
@@ -145,17 +149,109 @@ class ADE:
         
         return {
             # === PHYSIQUE ===
-            "taille": self.compute_taille(),
-            "force": self.compute_force(),
+            "taille": self.calculer_phenotype(
+                genes=(
+                    self.genes.prod_croissance.expression,
+                    self.genes.recep_croissance.expression,
+                    self.genes.prod_igf1.expression,
+                    self.genes.recep_igf1.expression,
+                    self.genes.taille_osseuse.expression,
+                    self.genes.longueur_leviers_osseux.expression
+                ),
+                poids=(
+                    0.6, 
+                    0.6, 
+                    -0.5,
+                    -0.5,
+                    0.4,
+                    0.2
+                )
+            ),
+            "force": "",
             "resistance_coups": "",
             "resistance_froid": "", 
             "vitesse": "",
             "esperance_de_vie" : "",
             
             # === COMPORTEMENTAUX ===
-            "agressivite": "",
-            "altruisme": "",
-            "courage": "",
+            "agressivite": self.calculer_phenotype(
+                genes=(
+                    self.genes.prod_testosterone.expression,
+                    self.genes.recep_testosterone.expression,
+                    self.genes.prod_serotonine.expression, 
+                    self.genes.recep_serotonine.expression,
+                    self.genes.ratio_cortex_prefrontal_amygdale.expression,
+                    self.genes.maoa.expression,
+                    self.genes.reactivite_amygdale.expression,
+                    self.genes.prod_vasopressine.expression, 
+                    self.genes.recep_vasopressine.expression,
+                    self.genes.voie_glutamatergique.expression
+                ),
+                poids=(
+                    0.7,
+                    0.7,
+                    -0.7,
+                    -0.7,
+                    0.4,
+                    0.3,
+                    0.2,
+                    0.15,
+                    0.15,
+                    0.15
+                )
+            ),
+            "altruisme": self.calculer_phenotype(
+                genes=(
+                    self.genes.prod_oxytocine.expression,
+                    self.genes.recep_oxytocine.expression,
+                    self.genes.densite_neurones_miroirs.expression,
+                    self.genes.prod_serotonine.expression,
+                    self.genes.recep_serotonine.expression,
+                    self.genes.ratio_cortex_prefrontal_amygdale.expression,
+                    self.genes.prod_testosterone.expression,
+                    self.genes.recep_testosterone.expression,
+                    self.genes.prod_vasopressine.expression,
+                    self.genes.recep_vasopressine.expression 
+                ),
+                poids=(
+                    0.7,
+                    0.7,
+                    0.6,
+                    0.4,
+                    0.4,
+                    0.3,
+                    -0.3,
+                    -0.3,
+                    0.15,
+                    0.15
+                )
+            ),
+            "courage": self.calculer_phenotype(
+                genes=(
+                    self.genes.reactivite_amygdale.expression,
+                    self.genes.ratio_cortex_prefrontal_amygdale.expression,
+                    self.genes.prod_cortisol.expression,
+                    self.genes.recep_cortisol.expression,
+                    self.genes.prod_serotonine.expression,
+                    self.genes.recep_serotonine.expression,
+                    self.genes.prod_testosterone.expression,
+                    self.genes.recep_testosterone.expression,
+                    self.genes.prod_dopamine.expression,
+                    self.genes.recep_dopamine.expression
+                ),
+                poids=(
+                    -0.5,
+                    0.5,
+                    0.4,
+                    0.4,
+                    0.4,
+                    0.4,
+                    0.3,
+                    0.3,
+                    0.2,
+                    0.2
+                )
+            ),
             "memoire": "",
             "rancune": "",
 
@@ -167,260 +263,24 @@ class ADE:
             "discretion" : ""
         }
     
-    def calculer_phenotype(self, genes: tuple, poids: tuple):
+    def calculer_phenotype(self, genes: tuple, poids: tuple, bruit=True):
 
-        effet_serotonine = (
-            0.5*self.genes.prod_serotonine.expression 
-            + 0.5*self.genes.recep_serotonine.expression
-        )
-        effet_cortisol = (
-            0.5*self.genes.prod_cortisol.expression 
-            + 0.5*self.genes.recep_cortisol.expression
-        )
-        effet_dopamine = (
-            0.5*self.genes.prod_dopamine.expression
-            + 0.5*self.genes.recep_dopamine.expression
-        )
-        effet_testosterone = (
-            0.5*self.genes.prod_testosterone.expression 
-            + 0.5*self.genes.recep_testosterone.expression
-        )
+        score = np.dot(genes, poids)
 
-        score_brut = (
-            -0.5*self.genes.reactivite_amygdale.expression
-            + 0.5*self.genes.ratio_cortex_prefrontal_amygdale.expression
-            + 0.4*effet_cortisol
-            + 0.4*effet_serotonine
-            + 0.3*effet_dopamine
-            - 0.3*effet_testosterone
-    
-        )
-
-        # calculés à modification des poids à reprendre en compte après chaque modification
-        for p in poids:
-        MIN_THEO = 4
-        MAX_THEO = 1.9
+        # calculés dynamiquement par les poids 
+        MIN_THEO = sum(p for p in poids if p < 0)
+        MAX_THEO = sum(p for p in poids if p > 0)
         
-        # action hypothétique d'autres gènes non-représentés 
-        SIGMA_BRUT = 0.05 * (MAX_THEO - MIN_THEO)
-        score_brut += np.random.normal(0, SIGMA_BRUT)
+        if bruit:
+            # action hypothétique d'autres gènes non-représentés 
+            score *= np.random.normal(1, 0.05)
 
         # normalisation entre [0;1]
-        score_genetique = (score_brut - MIN_THEO) / (MAX_THEO - MIN_THEO)
+        score = (score - MIN_THEO) / (MAX_THEO - MIN_THEO)
 
-        return np.clip(score_genetique, 0, 1)
+        return np.clip(score, 0, 1)
 
-    def compute_taille(self):
 
-        taille_score = 0.6 * self.genes['croissance'] + 0.25 * self.genes['taille_os'] + 0.1 * self.genes['densite_os'] 
-
-        bruit = np.random.normal(1, 0.05)  
-        taille_score *= bruit
-
-        taille_score_norm = np.clip(taille_score, 0, 1)
-
-        return self.TAILLE_MIN + taille_score_norm * (self.TAILLE_MAX - self.TAILLE_MIN)
-
-    
-    def compute_force():
-
-        force_score = ""
-
-        return
-    
-    def compute_resistance_coups():
-
-        return
-    
-    def compute_resistance_froid():
-
-        return
-    
-    def compute_vitesse():
-
-        return
-    
-    def compute_agressivite(self):
-
-        effet_testosterone = (
-            0.5*self.genes.prod_testosterone.expression 
-            + 0.5*self.genes.recep_testosterone.expression
-        )
-        effet_serotonine = (
-            0.5*self.genes.prod_serotonine.expression 
-            + 0.5*self.genes.recep_serotonine.expression
-        )
-        effet_vasopressine = (
-            0.5*self.genes.prod_vasopressine.expression 
-            + 0.5*self.genes.recep_vasopressine.expression
-        )
-
-        score_brut = (
-            0.7*effet_testosterone
-            - 0.7*effet_serotonine
-            + 0.4*self.genes.ratio_cortex_prefrontal_amygdale.expression
-            + 0.3*self.genes.maoa.expression
-            + 0.2*self.genes.reactivite_amygdale.expression
-            + 0.15*effet_vasopressine
-            + 0.15*self.genes.voie_glutamatergique.expression
-        )
-
-        MIN_THEO = -0.7
-        MAX_THEO = 1.9
-        
-        # action hypothétique d'autres gènes non-représentés 
-        SIGMA_BRUT = 0.05 * (MAX_THEO - MIN_THEO)
-        score_brut += np.random.normal(0, SIGMA_BRUT)
-
-        # normalisation entre [0;1]
-        score_genetique = (score_brut - MIN_THEO) / (MAX_THEO - MIN_THEO)
-
-        return np.clip(score_genetique, 0, 1)
-    
-    def compute_altruisme(self):
-
-        effet_oxytocine = (
-            0.5*self.genes.prod_oxytocine.expression 
-            + 0.5*self.genes.recep_oxytocine.expression
-        )
-        effet_serotonine = (
-            0.5*self.genes.prod_serotonine.expression 
-            + 0.5*self.genes.recep_serotonine.expression
-        )
-        effet_vasopressine = (
-            0.5*self.genes.prod_vasopressine.expression 
-            + 0.5*self.genes.recep_vasopressine.expression
-        )
-        effet_testosterone = (
-            0.5*self.genes.prod_testosterone.expression 
-            + 0.5*self.genes.recep_testosterone.expression
-        )
-
-        score_brut = (
-            0.7*effet_oxytocine
-            + 0.6*self.genes.densite_neurones_miroirs.expression
-            + 0.4*effet_serotonine
-            + 0.3*self.genes.ratio_cortex_prefrontal_amygdale.expression
-            - 0.3*effet_testosterone
-            + 0.15*effet_vasopressine
-        )
-
-        # calculés à partir des poids à reprendre en compte après chaque modification
-        MIN_THEO = -0.3
-        MAX_THEO = 2.15
-        
-        # action hypothétique d'autres gènes non-représentés 
-        SIGMA_BRUT = 0.05 * (MAX_THEO - MIN_THEO)
-        score_brut += np.random.normal(0, SIGMA_BRUT)
-
-        # normalisation entre [0;1]
-        score_genetique = (score_brut - MIN_THEO) / (MAX_THEO - MIN_THEO)
-
-        return np.clip(score_genetique, 0, 1)
-    
-    def compute_courage(self):
-
-        effet_serotonine = (
-            0.5*self.genes.prod_serotonine.expression 
-            + 0.5*self.genes.recep_serotonine.expression
-        )
-        effet_cortisol = (
-            0.5*self.genes.prod_cortisol.expression 
-            + 0.5*self.genes.recep_cortisol.expression
-        )
-        effet_dopamine = (
-            0.5*self.genes.prod_dopamine.expression
-            + 0.5*self.genes.recep_dopamine.expression
-        )
-        effet_testosterone = (
-            0.5*self.genes.prod_testosterone.expression 
-            + 0.5*self.genes.recep_testosterone.expression
-        )
-
-        score_brut = (
-            -0.5*self.genes.reactivite_amygdale.expression
-            + 0.5*self.genes.ratio_cortex_prefrontal_amygdale.expression
-            + 0.4*effet_cortisol
-            + 0.4*effet_serotonine
-            + 0.3*effet_dopamine
-            - 0.3*effet_testosterone
-    
-        )
-
-        # calculés à partir des poids à reprendre en compte après chaque modification
-        MIN_THEO = -0.5
-        MAX_THEO = 1.9
-        
-        # action hypothétique d'autres gènes non-représentés 
-        SIGMA_BRUT = 0.05 * (MAX_THEO - MIN_THEO)
-        score_brut += np.random.normal(0, SIGMA_BRUT)
-
-        # normalisation entre [0;1]
-        score_genetique = (score_brut - MIN_THEO) / (MAX_THEO - MIN_THEO)
-
-        return np.clip(score_genetique, 0, 1)
-    
-    def compute_memoire():
-
-        effet_serotonine = (
-            0.5*self.genes.prod_serotonine.expression 
-            + 0.5*self.genes.recep_serotonine.expression
-        )
-        effet_cortisol = (
-            0.5*self.genes.prod_cortisol.expression 
-            + 0.5*self.genes.recep_cortisol.expression
-        )
-        effet_dopamine = (
-            0.5*self.genes.prod_dopamine.expression
-            + 0.5*self.genes.recep_dopamine.expression
-        )
-        effet_testosterone = (
-            0.5*self.genes.prod_testosterone.expression 
-            + 0.5*self.genes.recep_testosterone.expression
-        )
-
-        score_brut = (
-            -0.5*self.genes.reactivite_amygdale.expression
-            + 0.5*self.genes.ratio_cortex_prefrontal_amygdale.expression
-            + 0.4*effet_cortisol
-            + 0.4*effet_serotonine
-            + 0.3*effet_dopamine
-            - 0.3*effet_testosterone
-    
-        )
-
-        # calculés à partir des poids à reprendre en compte après chaque modification
-        MIN_THEO = -0.5
-        MAX_THEO = 1.9
-        
-        # action hypothétique d'autres gènes non-représentés 
-        SIGMA_BRUT = 0.05 * (MAX_THEO - MIN_THEO)
-        score_brut += np.random.normal(0, SIGMA_BRUT)
-
-        # normalisation entre [0;1]
-        score_genetique = (score_brut - MIN_THEO) / (MAX_THEO - MIN_THEO)
-
-        return np.clip(score_genetique, 0, 1)
-    
-    def compute_rancune():
-
-        return
-    
-    def compute_cout_energetique():
-
-        return
-    
-    def compute_fertilite():
-
-        return
-    
-    def compute_temps_de_reaction():
-
-        return
-    
-    def compute_distance_détection():
-
-        return
 
 
 

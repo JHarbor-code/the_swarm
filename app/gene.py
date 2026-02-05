@@ -208,6 +208,18 @@ class ProdCortisol(Gene):
 class RecepCortisol(Gene):
     alleles_possibles = []
 
+class ProdCroissance(Gene):
+    alleles_possibles = []
+
+class RecepCroissance(Gene):
+    alleles_possibles = []
+    
+class ProdIGF1(Gene):
+    alleles_possibles = []
+
+class RecepIGF1(Gene):
+    alleles_possibles=[]
+
 
 # === STRUCTURE CEREBRALE ===
 class DensiteGraisseBrune(Gene):
@@ -243,7 +255,7 @@ class TraitementSensorielCortical(Gene):
 class VolumeMatiereBlanche(Gene):
     alleles_possibles = []
 
-
+DensiteGraisseBrune
 # === NEUROPHYSIOLOGIE ===
 
 class ConductanceNerveuse(Gene):
@@ -256,7 +268,7 @@ class VoieGlutamatergique(Gene):
     alleles_possibles = []
 
 class EfficaciteJonctionsNeuromusculaires(Gene):
-    pasalleles_possibles = []
+    salleles_possibles = []
 
 
 # === MUSCLE / FORCE / MOUVEMENT ===
@@ -286,9 +298,6 @@ class TailleOsseuse(Gene):
     alleles_possibles = []
 
 class LongueurLeviersOsseux(Gene):
-    alleles_possibles = []
-
-class TailleGlobale(Gene):
     alleles_possibles = []
 
 
@@ -343,21 +352,6 @@ class CapaciteReparationTissulaire(Gene):
     alleles_possibles = []
 
 class ReactiviteCoagulation(Gene):
-    alleles_possibles = []
-
-
-# === THERMOREGULATION ===
-
-class DensiteGraisseBrune(Gene):
-    alleles_possibles = []
-
-class VasoconstrictionPeripherique(Gene):
-    alleles_possibles = []
-
-class DensiteGlandesSudoripares(Gene):
-    alleles_possibles = []
-
-class RegulationThermiqueActive(Gene):
     alleles_possibles = []
 
 
