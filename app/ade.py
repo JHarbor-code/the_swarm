@@ -126,9 +126,10 @@ class ADE:
         #self.TAILLE_MAX = 1.60
         self.parent1 = parent1
         self.parent2 = parent2
+        self.genes = self.set_genes(fondateur=True)
 
 
-    def set_genes(self, genes_parent1=None, genes_parent2=None, fondateur=False):
+    def set_genes(self, parent1: "ADE"=None, parent2: "ADE"=None, fondateur=False):
         """
         Définit les gènes (immutables) de l'ADE
         """
@@ -136,16 +137,7 @@ class ADE:
             return GenesDict.set_gene(fondateur=True)
 
         else:
-            return GenesDict.set_gene(parent1=genes_parent1, parent2=genes_parent2)
-
-    def heriter(self):
-
-        self.genes = self.set_genes(self.parent1, self.parent2)
-
-
-    def creer_fondateur(self):
-
-        self.genes = self.set_genes(fondateur=True)
+            return GenesDict.set_gene(parent1=parent1.genes, parent2=parent2.genes)
 
 
 
@@ -207,33 +199,120 @@ class ADE:
     
     def compute_agressivite(self):
 
-        effet_testosterone = 0.5*self.genes.prod_testosterone + 0.5*self.genes.recep_testosterone
-        effet_serotonine = 0.5*self.genes.prod_serotonine + 0.5*self.genes.recep_serotonine
-
-        score = (
-            effet_testosterone
-            - 0.7*effet_serotonine 
-            + 0.4*self.genes.ratio_cortex_prefrontal_amygdale 
-            + 0.3*self.genes.maoa
-            + 0.2*self.genes.reactivite_amygdale
-            + 0.15*self.genes.recep_vasopressine
-            + 0.15*self.genes.voie_glutamatergique
+        effet_testosterone = (
+            0.5*self.genes.prod_testosterone.expression 
+            + 0.5*self.genes.recep_testosterone.expression
+        )
+        effet_serotonine = (
+            0.5*self.genes.prod_serotonine.expression 
+            + 0.5*self.genes.recep_serotonine.expression
+        )
+        effet_vasopressine = (
+            0.5*self.genes.prod_vasopressine.expression 
+            + 0.5*self.genes.recep_vasopressine.expression
         )
 
-        bruit = np.random.normal(1, 0.05)  
-        score *= bruit
-        score -= 0.5
-        score = np.clip(score, 0, 1)
+        score_brut = (
+            0.7*effet_testosterone
+            - 0.7*effet_serotonine
+            + 0.4*self.genes.ratio_cortex_prefrontal_amygdale.expression
+            + 0.3*self.genes.maoa.expression
+            + 0.2*self.genes.reactivite_amygdale.expression
+            + 0.15*effet_vasopressine
+            + 0.15*self.genes.voie_glutamatergique.expression
+        )
 
-        return score
+        MIN_THEO = -0.7
+        MAX_THEO = 1.9
+        
+        # action hypothétique d'autres gènes non-représentés 
+        SIGMA_BRUT = 0.05 * (MAX_THEO - MIN_THEO)
+        score_brut += np.random.normal(0, SIGMA_BRUT)
+
+        # normalisation entre [0;1]
+        score_genetique = (score_brut - MIN_THEO) / (MAX_THEO - MIN_THEO)
+
+        return np.clip(score_genetique, 0, 1)
     
-    def compute_altruisme():
+    def compute_altruisme(self):
 
-        return
+        effet_oxytocine = (
+            0.5*self.genes.prod_oxytocine.expression 
+            + 0.5*self.genes.recep_oxytocine.expression
+        )
+        effet_serotonine = (
+            0.5*self.genes.prod_serotonine.expression 
+            + 0.5*self.genes.recep_serotonine.expression
+        )
+        effet_vasopressine = (
+            0.5*self.genes.prod_vasopressine.expression 
+            + 0.5*self.genes.recep_vasopressine.expression
+        )
+        effet_testosterone = (
+            0.5*self.genes.prod_testosterone.expression 
+            + 0.5*self.genes.recep_testosterone.expression
+        )
+
+        score_brut = (
+            0.7*effet_oxytocine
+            + 0.6*self.genes.densite_neurones_miroirs.expression
+            + 0.4*effet_serotonine
+            + 0.3*self.genes.ratio_cortex_prefrontal_amygdale.expression
+            - 0.3*effet_testosterone
+            + 0.15*effet_vasopressine
+        )
+
+        # calculés à partir des poids à reprendre en compte après chaque modification
+        MIN_THEO = -0.3
+        MAX_THEO = 2.15
+        
+        # action hypothétique d'autres gènes non-représentés 
+        SIGMA_BRUT = 0.05 * (MAX_THEO - MIN_THEO)
+        score_brut += np.random.normal(0, SIGMA_BRUT)
+
+        # normalisation entre [0;1]
+        score_genetique = (score_brut - MIN_THEO) / (MAX_THEO - MIN_THEO)
+
+        return np.clip(score_genetique, 0, 1)
     
-    def compute_courage():
+    def compute_courage(self):
 
-        return
+        effet_serotonine = (
+            0.5*self.genes.prod_serotonine.expression 
+            + 0.5*self.genes.recep_serotonine.expression
+        )
+        effet_cortisol = (
+            0.5*self.genes.prod_cortisol.expression 
+            + 0.5*self.genes.recep_cortisol.expression
+        )
+        effet_testosterone = (
+            0.5*self.genes.prod_testosterone.expression 
+            + 0.5*self.genes.recep_testosterone.expression
+        )
+
+        score_brut = (
+            -0.5*self.genes.reactivite_amygdale.expression
+            + 0.5*self.genes.ratio_cortex_prefrontal_amygdale
+            + 0.4*effet_cortisol
+            + 0.6*self.genes.densite_neurones_miroirs.expression
+            + 0.4*effet_serotonine
+            + 0.3*self.genes.ratio_cortex_prefrontal_amygdale.expression
+            - 0.3*effet_testosterone
+            + 0.15*effet_vasopressine
+        )
+
+        # calculés à partir des poids à reprendre en compte après chaque modification
+        MIN_THEO = -0.3
+        MAX_THEO = 2.15
+        
+        # action hypothétique d'autres gènes non-représentés 
+        SIGMA_BRUT = 0.05 * (MAX_THEO - MIN_THEO)
+        score_brut += np.random.normal(0, SIGMA_BRUT)
+
+        # normalisation entre [0;1]
+        score_genetique = (score_brut - MIN_THEO) / (MAX_THEO - MIN_THEO)
+
+        return np.clip(score_genetique, 0, 1)
     
     def compute_memoire():
 
