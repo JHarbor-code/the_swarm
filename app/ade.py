@@ -1,5 +1,4 @@
 import numpy as np
-import random
 import gene as gn
 from pydantic import BaseModel, ValidationError
 
@@ -167,7 +166,31 @@ class ADE:
                     0.2
                 )
             ),
-            "force": "",
+            "force": self.calculer_phenotype(
+                genes=(
+                    self.genes.proportion_fibres_musculaires.expression,
+                    self.genes.section_transversale_muscle.expression,
+                    self.genes.efficacite_jonctions_neuromusculaires.expression,
+                    self.genes.stockage_adipeux.expression,
+                    self.genes.prod_testosterone.expression,
+                    self.genes.recep_testosterone.expression,
+                    self.genes.densite_osseuse.expression,
+                    self.genes.prod_croissance.expression,
+                    self.genes.recep_croissance.expression    
+                    ),
+                poids=(
+                    0.6,
+                    0.6,
+                    0.5,
+                    0.4,
+                    0.3,
+                    0.3,
+                    0.2,
+                    0.15,
+                    0.15,
+
+                )
+            ),
             "resistance_coups": "",
             "resistance_froid": "", 
             "vitesse": "",
