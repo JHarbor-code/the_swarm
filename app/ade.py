@@ -26,6 +26,8 @@ class GenesDict(BaseModel):
     recep_croissance: gn.RecepCroissance
     prod_igf1 = gn.ProdIGF1
     recep_igf1 = gn.RecepIGF1
+    prod_sexuelles = gn.ProdSexuelles
+    recep_sexuelles = gn.RecepSexuelles
 
 
     # Structures cérébrales & traitement
@@ -54,6 +56,7 @@ class GenesDict(BaseModel):
     densite_osseuse: gn.DensiteOsseuse
     taille_osseuse: gn.TailleOsseuse
     longueur_leviers_osseux: gn.LongueurLeviersOsseux
+    elasticite_tissus_conjonctif = gn.ElasticiteTissusConjonctif
 
     # Métabolisme & énergie
     efficacite_mitochondriale: gn.EfficaciteMitochondriale
@@ -75,6 +78,7 @@ class GenesDict(BaseModel):
     regulation_inflammation: gn.RegulationInflammation
     capacite_reparation_tissulaire: gn.CapaciteReparationTissulaire
     reactivite_coagulation: gn.ReactiviteCoagulation
+    barrieres_épithéliales: gn.BarrieresEpithéliales
 
     # Thermorégulation
     densite_graisse_brun: gn.DensiteGraisseBrune
@@ -125,8 +129,6 @@ class ADE:
 
     def __init__(self, parent1: "ADE"=None, parent2: "ADE"=None):
 
-        #self.TAILLE_MIN = 0.5
-        #self.TAILLE_MAX = 1.60
         self.parent1 = parent1
         self.parent2 = parent2
         self.genes = self.set_genes(fondateur=True)
@@ -144,147 +146,384 @@ class ADE:
 
 
 
-    def set_phenotype(self, genes):
-        
-        return {
-            # === PHYSIQUE ===
-            "taille": self.calculer_phenotype(
-                genes=(
-                    self.genes.prod_croissance.expression,
-                    self.genes.recep_croissance.expression,
-                    self.genes.prod_igf1.expression,
-                    self.genes.recep_igf1.expression,
-                    self.genes.taille_osseuse.expression,
-                    self.genes.longueur_leviers_osseux.expression
-                ),
-                poids=(
-                    0.6, 
-                    0.6, 
-                    -0.5,
-                    -0.5,
-                    0.4,
-                    0.2
-                )
-            ),
-            "force": self.calculer_phenotype(
-                genes=(
-                    self.genes.proportion_fibres_musculaires.expression,
-                    self.genes.section_transversale_muscle.expression,
-                    self.genes.efficacite_jonctions_neuromusculaires.expression,
-                    self.genes.stockage_adipeux.expression,
-                    self.genes.prod_testosterone.expression,
-                    self.genes.recep_testosterone.expression,
-                    self.genes.densite_osseuse.expression,
-                    self.genes.prod_croissance.expression,
-                    self.genes.recep_croissance.expression    
-                    ),
-                poids=(
-                    0.6,
-                    0.6,
-                    0.5,
-                    0.4,
-                    0.3,
-                    0.3,
-                    0.2,
-                    0.15,
-                    0.15,
+    def set_phenotype(self):
+        phenotype = {}
+        # définition des attributs physique
 
-                )
+        phenotype["taille"] = self.calculer_phenotype(
+            genes=(
+                self.genes.prod_croissance.expression,
+                self.genes.recep_croissance.expression,
+                self.genes.prod_igf1.expression,
+                self.genes.recep_igf1.expression,
+                self.genes.taille_osseuse.expression,
+                self.genes.longueur_leviers_osseux.expression
             ),
-            "resistance_coups": "",
-            "resistance_froid": "", 
-            "vitesse": "",
-            "esperance_de_vie" : "",
+            poids=(
+                0.6, 
+                0.6, 
+                -0.5,
+                -0.5,
+                0.4,
+                0.2
+            )
+        )
+        
+        phenotype["force"] = self.calculer_phenotype(
+            genes=(
+                self.genes.proportion_fibres_musculaires.expression,
+                self.genes.section_transversale_muscle.expression,
+                self.genes.efficacite_jonctions_neuromusculaires.expression,
+                self.genes.stockage_adipeux.expression,
+                self.genes.prod_testosterone.expression,
+                self.genes.recep_testosterone.expression,
+                self.genes.densite_osseuse.expression,
+                self.genes.prod_croissance.expression,
+                self.genes.recep_croissance.expression    
+                ),
+            poids=(
+                0.6,
+                0.6,
+                0.5,
+                0.4,
+                0.3,
+                0.3,
+                0.2,
+                0.15,
+                0.15,
+
+            )
+        )
             
-            # === COMPORTEMENTAUX ===
-            "agressivite": self.calculer_phenotype(
-                genes=(
-                    self.genes.prod_testosterone.expression,
-                    self.genes.recep_testosterone.expression,
-                    self.genes.prod_serotonine.expression, 
-                    self.genes.recep_serotonine.expression,
-                    self.genes.ratio_cortex_prefrontal_amygdale.expression,
-                    self.genes.maoa.expression,
-                    self.genes.reactivite_amygdale.expression,
-                    self.genes.prod_vasopressine.expression, 
-                    self.genes.recep_vasopressine.expression,
-                    self.genes.voie_glutamatergique.expression
-                ),
-                poids=(
-                    0.7,
-                    0.7,
-                    -0.7,
-                    -0.7,
-                    0.4,
-                    0.3,
-                    0.2,
-                    0.15,
-                    0.15,
-                    0.15
-                )
+        phenotype["masse"] = self.calculer_phenotype(
+            genes=(
+                self.genes.prod_croissance.expression,
+                self.genes.recep_croissance.expression,
+                self.genes.stockage_adipeux.expression, 
+                self.genes.taille_osseuse.expression,
+                self.genes.proportion_fibres_musculaires.expression,
+                self.genes.prod_testosterone.expression,
+                self.genes.recep_testosterone.expression,
+                self.genes.efficacite_digestive.expression
             ),
-            "altruisme": self.calculer_phenotype(
-                genes=(
-                    self.genes.prod_oxytocine.expression,
-                    self.genes.recep_oxytocine.expression,
-                    self.genes.densite_neurones_miroirs.expression,
-                    self.genes.prod_serotonine.expression,
-                    self.genes.recep_serotonine.expression,
-                    self.genes.ratio_cortex_prefrontal_amygdale.expression,
-                    self.genes.prod_testosterone.expression,
-                    self.genes.recep_testosterone.expression,
-                    self.genes.prod_vasopressine.expression,
-                    self.genes.recep_vasopressine.expression 
-                ),
-                poids=(
-                    0.7,
-                    0.7,
-                    0.6,
-                    0.4,
-                    0.4,
-                    0.3,
-                    -0.3,
-                    -0.3,
-                    0.15,
-                    0.15
-                )
+            poids=(
+                0.5,
+                0.5,
+                0.5,
+                0.4,
+                0.4,
+                0.2,
+                0.2,
+                0.15
+            )
+        )
+        
+        # capacités 
+        phenotype["resistance_coups"] = self.calculer_phenotype(
+            genes=(
+                self.genes.densite_osseuse.expression,
+                self.genes.capacite_reparation_tissulaire.expression,
+                self.genes.proportion_fibres_musculaires.expression,
+                self.genes.reactivite_coagulation.expression,
+                self.genes.elasticite_tissus_conjonctif.expression
             ),
-            "courage": self.calculer_phenotype(
-                genes=(
-                    self.genes.reactivite_amygdale.expression,
-                    self.genes.ratio_cortex_prefrontal_amygdale.expression,
-                    self.genes.prod_cortisol.expression,
-                    self.genes.recep_cortisol.expression,
-                    self.genes.prod_serotonine.expression,
-                    self.genes.recep_serotonine.expression,
-                    self.genes.prod_testosterone.expression,
-                    self.genes.recep_testosterone.expression,
-                    self.genes.prod_dopamine.expression,
-                    self.genes.recep_dopamine.expression
-                ),
-                poids=(
-                    -0.5,
-                    0.5,
-                    0.4,
-                    0.4,
-                    0.4,
-                    0.4,
-                    0.3,
-                    0.3,
-                    0.2,
-                    0.2
-                )
+            poids=(
+                0.6,
+                0.5,
+                0.4,
+                0.3,
+                0.2
+            )
+        )
+
+        phenotype['resistance_infectueuse'] = self.calculer_phenotype(
+            genes=(
+                self.genes.reactivite_systeme_immunitaire.expression,
+                self.genes.production_anticorps.expression,
+                self.genes.diversite_cmh.expression,
+                self.genes.barrieres_épithéliales.expression,
+                self.genes.production_peptides_antimicrobiens.expression,
+                self.genes.regulation_inflammation.expression
             ),
-            "memoire": "",
-            "rancune": "",
+            poids=(
+                0.5,
+                0.5,
+                0.4,
+                0.4,
+                0.3,
+                0.3
+            )
+        )
+        
+        sv = phenotype['taille']**2 / (phenotype['taille']**2 + phenotype['masse'])
+        phenotype["regulation_temperature"] = self.calculer_phenotype(
+            genes=(
+                self.genes.densite_graisse_brun.expression,
+                self.genes.regulation_thermique_active.expression,
+                self.genes.vasoconstriction_peripherique.expression,
+                self.genes.densite_glandes_sudoripares.expression,
+                sv,
+                self.genes.taux_metabolique_basal.expression,
+            ),
+            poids=(
+                0.5,
+                0.5,
+                0.4,
+                0.4,
+                0.3,
+                0.3
+            )
+        ) 
+
+        phenotype["vitesse"] = self.calculer_phenotype(
+            genes=(
+                self.genes.proportion_fibres_rapides.expression,
+                phenotype['taille'],
+                phenotype['masse'],
+                self.genes.conductance_nerveuse.expression,
+                self.genes.efficacite_mitochondriale.expression,
+                self.genes.stockage_glycogene.expression
+            ),
+            poids=(
+                0.6,
+                0.4,
+                -0.4, 
+                0.3,
+                0.2, 
+                0.2
+            )
+        )
+
+        phenotype['endurance'] = self.calculer_phenotype(
+            genes=(
+                self.genes.efficacite_mitochondriale.expression,
+                self.genes.proportion_fibres_lentes.expression,
+                phenotype['masse'],
+                self.genes.capacite_pulmonaire.expression,
+                self.genes.efficacite_cardiovasculaire.expression,
+                phenotype['taille'],
+                self.genes.stockage_glycogene.expression,
+                self.genes.regulation_lactate.expression
+            ),
+            poids=(
+                0.5,
+                0.5,
+                -0.4,
+                0.4,
+                0.4,
+                0.3,
+                0.2,
+                0.15
+            )
+        )
+            
+        # === COMPORTEMENTAUX ===
+        phenotype["agressivite"] = self.calculer_phenotype(
+            genes=(
+                self.genes.prod_testosterone.expression,
+                self.genes.recep_testosterone.expression,
+                self.genes.prod_serotonine.expression, 
+                self.genes.recep_serotonine.expression,
+                self.genes.ratio_cortex_prefrontal_amygdale.expression,
+                self.genes.maoa.expression,
+                self.genes.reactivite_amygdale.expression,
+                self.genes.prod_vasopressine.expression, 
+                self.genes.recep_vasopressine.expression,
+                self.genes.voie_glutamatergique.expression
+            ),
+            poids=(
+                0.7,
+                0.7,
+                -0.7,
+                -0.7,
+                0.4,
+                0.3,
+                0.2,
+                0.15,
+                0.15,
+                0.15
+            )
+        )
+        phenotype["altruisme"] = self.calculer_phenotype(
+            genes=(
+                self.genes.prod_oxytocine.expression,
+                self.genes.recep_oxytocine.expression,
+                self.genes.densite_neurones_miroirs.expression,
+                self.genes.prod_serotonine.expression,
+                self.genes.recep_serotonine.expression,
+                self.genes.ratio_cortex_prefrontal_amygdale.expression,
+                self.genes.prod_testosterone.expression,
+                self.genes.recep_testosterone.expression,
+                self.genes.prod_vasopressine.expression,
+                self.genes.recep_vasopressine.expression 
+            ),
+            poids=(
+                0.7,
+                0.7,
+                0.6,
+                0.4,
+                0.4,
+                0.3,
+                -0.3,
+                -0.3,
+                0.15,
+                0.15
+            )
+        )
+        
+        phenotype["courage"] = self.calculer_phenotype(
+            genes=(
+                self.genes.reactivite_amygdale.expression,
+                self.genes.ratio_cortex_prefrontal_amygdale.expression,
+                self.genes.prod_cortisol.expression,
+                self.genes.recep_cortisol.expression,
+                self.genes.prod_serotonine.expression,
+                self.genes.recep_serotonine.expression,
+                self.genes.prod_testosterone.expression,
+                self.genes.recep_testosterone.expression,
+                self.genes.prod_dopamine.expression,
+                self.genes.recep_dopamine.expression
+            ),
+            poids=(
+                -0.5,
+                0.5,
+                0.4,
+                0.4,
+                0.4,
+                0.4,
+                0.3,
+                0.3,
+                0.2,
+                0.2
+            )
+        )
+            
+        phenotype["memoire"] = self.calculer_phenotype(
+            genes=(
+                self.genes.volume_hippocampe.expression,
+                self.genes.plasticite_synaptique.expression,
+                self.genes.conductance_nerveuse.expression,
+                self.genes.traitement_sensoriel_cortical.expression,
+                self.genes.densite_neurones_miroirs.expression,
+            ),
+            poids=(
+                0.4,
+                0.3, 
+                0.15,
+                0.1,  
+                0.05,  
+            )
+        )
+                
+        phenotype["rancune"] = self.calculer_phenotype(
+            genes=(
+                self.genes.volume_hippocampe.expression,
+                self.genes.plasticite_synaptique.expression,
+                self.genes.reactivite_amygdale.expression,
+                self.genes.maoa.expression,
+                self.genes.prod_oxytocine.expression,
+                self.genes.recep_oxytocine.expression,
+                self.genes.prod_serotonine.expression,
+                self.genes.recep_serotonine.expression
+            ),
+            poids=(
+                0.6,
+                0.5,
+                0.4,
+                -0.4,
+                -0.15,
+                -0.15,
+                -0.15,
+                -0.15
+            )
+        )
 
             # === SURVIE === 
-            "cout_energetique": "",
-            "fertilite": "",
-            "temps_de_reaction": "",
-            "distance_detection": "",
-            "discretion" : ""
-        }
+        phenotype["cout_energetique"] = self.calculer_phenotype(
+            genes=(
+                self.genes.taux_metabolique_basal.expression,
+                phenotype['masse'],
+                self.genes.efficacite_mitochondriale.expression,
+                self.genes.proportion_fibres_lentes.expression,
+                self.genes.proportion_fibres_musculaires.expression,
+                self.genes.proportion_fibres_rapides.expression,
+                self.genes.regulation_thermique_active.expression,
+                self.genes.production_anticorps.expression, 
+                self.genes.production_peptides_antimicrobiens.expression,
+                self.genes.prod_cortisol.expression,
+                self.genes.prod_croissance.expression,
+                self.genes.prod_igf1.expression,
+                self.genes.prod_testosterone.expression,
+            ),
+            poids=(
+                0.5,
+                0.5,
+                -0.4,
+                0.05,
+                0.1,
+                0.15,
+                0.1,
+                0.1,
+                0.1,
+                0.1,
+                0.1,
+                0.1,
+                0.1
+            )
+        )
+
+        phenotype["fertilite"] = self.calculer_phenotype(
+            genes=(
+                self.genes.production_gametes.expression,
+                self.genes.prod_sexuelles.expression,
+                self.genes.recep_sexuelles.expression,
+                self.genes.qualite_gametes.expression,
+            ),
+            poids=(
+                0.5,
+                0.4,
+                0.4,
+                0.4,
+            )
+        )
+
+        phenotype["temps_de_reaction"] = self.calculer_phenotype(
+            genes=(
+                self.genes.conductance_nerveuse.expression,
+                self.genes.densite_canaux_ioniques.expression,
+                self.genes.voie_glutamatergique.expression,
+                self.genes.volume_matiere_blanche.expression,
+                self.genes.efficacite_jonctions_neuromusculaires.expression
+            ),
+            poids=(
+                0.6,
+                0.5,
+                0.4,
+                0.3,
+                0.3
+            )
+        )
+
+        phenotype["distance_detection"] = self.calculer_phenotype(
+            genes=(
+                self.genes.densite_photorcepteurs.expression,
+                self.genes.sensibilite_cellules_auditives.expression,
+                phenotype['taille'],
+                self.genes.acuite_retinienne.expression,
+                self.genes.taille_globe_oculaire.expression,
+                self.genes.traitement_sensoriel_cortical.expression,
+            ),
+            poids=(
+                0.5,
+                0.5,
+                0.4,
+                0.4,
+                0.3,
+                0.2
+            )
+        )
+
+
     
     def calculer_phenotype(self, genes: tuple, poids: tuple, bruit=True):
 

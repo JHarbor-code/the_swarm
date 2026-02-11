@@ -1,5 +1,6 @@
 ## En cours
 - [ ] Compute phenotype
+- [ ] calculer la résistance aux coup a partir de l'imc de l'intechte en temps reel ratio = taille / (taille + poids)
 
 ## Prochaines étapes
 - [ ] GUI pygame basique (wrap-around)

@@ -59,7 +59,7 @@ class Gene:
 
         h = alt.dominance
 
-        return ref.valeur + h * (alt.valeur - ref.valeur)
+        return round(ref.valeur + h * (alt.valeur - ref.valeur), 2)
     
         
     @classmethod
@@ -220,6 +220,12 @@ class ProdIGF1(Gene):
 class RecepIGF1(Gene):
     alleles_possibles=[]
 
+class ProdSexuelles(Gene):
+    alleles_possibles = []
+
+class RecepSexuelles(Gene):
+    alleles_possibles = []
+
 
 # === STRUCTURE CEREBRALE ===
 class DensiteGraisseBrune(Gene):
@@ -300,6 +306,9 @@ class TailleOsseuse(Gene):
 class LongueurLeviersOsseux(Gene):
     alleles_possibles = []
 
+class ElasticiteTissusConjonctif(Gene):
+    alleles_possibles = []
+
 
 # === METABOLISME ===
 
@@ -354,6 +363,9 @@ class CapaciteReparationTissulaire(Gene):
 class ReactiviteCoagulation(Gene):
     alleles_possibles = []
 
+class BarrieresEpithéliales(Gene):
+    alleles_possibles = [] 
+
 
 # === SENSORIELS ===
 
@@ -392,6 +404,7 @@ class ProductionGametes(Gene):
 
 class QualiteGametes(Gene):
     alleles_possibles = []
+
 
 
 # === COMPORTEMENT === 
