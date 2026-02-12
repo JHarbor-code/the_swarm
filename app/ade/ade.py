@@ -548,6 +548,5 @@ class ADE:
 
 
 test = ADE()
-test.creer_fondateur()
 
 print(test.genes)
