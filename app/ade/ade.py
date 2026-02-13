@@ -24,10 +24,10 @@ class GenesDict(BaseModel):
     recep_cortisol: gn.RecepCortisol
     prod_croissance: gn.ProdCroissance
     recep_croissance: gn.RecepCroissance
-    prod_igf1 = gn.ProdIGF1
-    recep_igf1 = gn.RecepIGF1
-    prod_sexuelles = gn.ProdSexuelles
-    recep_sexuelles = gn.RecepSexuelles
+    prod_igf1: gn.ProdIGF1
+    recep_igf1: gn.RecepIGF1
+    prod_sexuelles: gn.ProdSexuelles
+    recep_sexuelles: gn.RecepSexuelles
 
 
     # Structures cérébrales & traitement
@@ -56,7 +56,7 @@ class GenesDict(BaseModel):
     densite_osseuse: gn.DensiteOsseuse
     taille_osseuse: gn.TailleOsseuse
     longueur_leviers_osseux: gn.LongueurLeviersOsseux
-    elasticite_tissus_conjonctif = gn.ElasticiteTissusConjonctif
+    elasticite_tissus_conjonctif: gn.ElasticiteTissusConjonctif
 
     # Métabolisme & énergie
     efficacite_mitochondriale: gn.EfficaciteMitochondriale
@@ -127,18 +127,21 @@ class GenesDict(BaseModel):
 
 class ADE:
 
-    def __init__(self, parent1: "ADE"=None, parent2: "ADE"=None):
+    def __init__(self, parent1: "ADE"=None, parent2: "ADE"=None, name=None):
 
+        self.name = name
         self.parent1 = parent1
         self.parent2 = parent2
-        self.genes = self.set_genes(fondateur=True)
+        self.genes = self.set_genes()
+
+        self.phenotype = self.set_phenotype()
 
 
-    def set_genes(self, parent1: "ADE"=None, parent2: "ADE"=None, fondateur=False):
+    def set_genes(self, parent1: "ADE"=None, parent2: "ADE"=None):
         """
         Définit les gènes (immutables) de l'ADE
         """
-        if fondateur:
+        if not parent1 and not parent2:
             return GenesDict.set_gene(fondateur=True)
 
         else:
@@ -523,7 +526,7 @@ class ADE:
             )
         )
 
-
+        return phenotype
     
     def calculer_phenotype(self, genes: tuple, poids: tuple, bruit=True):
 
@@ -543,10 +546,14 @@ class ADE:
         return np.clip(score, 0, 1)
 
 
+    def __str__(self):
+
+        print(f"name : {self.name}")
+        print(self.genes)
+        print(self.phenotype)
+        
 
 
+test = ADE(name="test")
 
-
-test = ADE()
-
-print(test.genes)
+print(test)

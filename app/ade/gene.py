@@ -155,17 +155,10 @@ class Gene:
         
         else: 
             return allele
-        
-    def __repr__(self):
-        # Affiche les allèles et l’expression du gène
-        return (f"{self.__class__.__name__}"
-                f"(expr={self.expression:.2f}, "
-                f"{self.allele1.name}:{self.allele1.valeur:.2f}, "
-                f"{self.allele2.name}:{self.allele2.valeur:.2f})")
 
     def __str__(self):
-        # Affiche juste l’expression, plus lisible
-        return f"{self.__class__.__name__}({self.expression:.2f})"
+
+        return str(self.expression)
 
 
 
