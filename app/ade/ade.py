@@ -120,7 +120,7 @@ class GenesDict(BaseModel):
         return cls(**fields)
     
     def __repr__(self):
-        return "\n".join(f"{k}: {v}" for k, v in self.dict().items())
+        return "\n".join(f"{k}: {v}" for k, v in self.model_dump().items())
 
 
 
@@ -548,10 +548,31 @@ class ADE:
 
     def __str__(self):
 
-        print(f"name : {self.name}")
-        print(self.genes)
-        print(self.phenotype)
+        result = f"name : {self.name}\n"
         
+        result += """
+    ______________________________________________
+    |                                             |
+    |                   GENES                     |
+    |_____________________________________________|              
+    -----------------------------------------------
+    """
+        
+        for key, value in self.genes.model_dump().items():
+            result += f"{key} : {value}\n"
+        
+        result += """
+    ______________________________________________
+    |                                             |
+    |                 PHENOTYPE                   |
+    |_____________________________________________|              
+    -----------------------------------------------
+    """
+        
+        for key, value in self.phenotype.items():
+            result += f"{key} : {value}\n"
+        
+        return result
 
 
 test = ADE(name="test")
