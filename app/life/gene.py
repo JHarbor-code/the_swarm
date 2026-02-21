@@ -267,7 +267,7 @@ class VoieGlutamatergique(Gene):
     alleles_possibles = []
 
 class EfficaciteJonctionsNeuromusculaires(Gene):
-    salleles_possibles = []
+    alleles_possibles = []
 
 
 # === MUSCLE / FORCE / MOUVEMENT ===
