@@ -1,5 +1,5 @@
 import numpy as np
-import gene as gn
+import app.life.gene as gn
 from pydantic import BaseModel, ValidationError
 
 
@@ -551,30 +551,25 @@ class ADE:
         result = f"name : {self.name}\n"
         
         result += """
-    ______________________________________________
-    |                                             |
-    |                   GENES                     |
-    |_____________________________________________|              
-    -----------------------------------------------
-    """
+______________________________________________
+|                                             |
+|                   GENES                     |
+|_____________________________________________|              
+
+"""
         
         for key, value in self.genes.model_dump().items():
             result += f"{key} : {value}\n"
         
         result += """
-    ______________________________________________
-    |                                             |
-    |                 PHENOTYPE                   |
-    |_____________________________________________|              
-    -----------------------------------------------
-    """
+______________________________________________
+|                                             |
+|                 PHENOTYPE                   |
+|_____________________________________________|              
+
+"""
         
         for key, value in self.phenotype.items():
             result += f"{key} : {value}\n"
         
         return result
-
-
-test = ADE(name="test")
-
-print(test)
