@@ -329,6 +329,12 @@ class RegulationLactate(Gene):
 class CapacitePulmonaire(Gene):
     alleles_possibles = []
 
+class SurfactantPulmonaire(Gene):
+    alleles_possibles = []
+
+class StructurePulmonaire(Gene):
+    alleles_possibles = []
+
 class EfficaciteCardiovasculaire(Gene):
     alleles_possibles = []
 
@@ -404,5 +410,3 @@ class QualiteGametes(Gene):
 
 class MAOA(Gene):
     alleles_possibles = []
-
-

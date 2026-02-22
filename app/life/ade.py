@@ -68,6 +68,8 @@ class GenesDict(BaseModel):
 
     # Cardio / respiration
     capacite_pulmonaire: gn.CapacitePulmonaire
+    surfactant_pulmonaire: gn.SurfactantPulmonaire
+    structure_pulmonaire: gn.StructurePulmonaire
     efficacite_cardiovasculaire: gn.EfficaciteCardiovasculaire
 
     # Immunité & réparation
@@ -132,9 +134,6 @@ class ADE:
         self.name = name
         self.parent1 = parent1
         self.parent2 = parent2
-        self.genes = self.set_genes()
-
-        self.phenotype = self.set_phenotype()
 
 
     def set_genes(self, parent1: "ADE"=None, parent2: "ADE"=None):
@@ -544,6 +543,35 @@ class ADE:
         score = (score - MIN_THEO) / (MAX_THEO - MIN_THEO)
 
         return np.clip(score, 0, 1)
+    
+    def naitre(self):
+
+        self.genes = self.set_genes()
+        self.phenotype = self.set_phenotype()
+
+        self.integrite = 1
+        self.oxygenation = 1
+        self.taux_co2 = 0
+        self.hydratation = 1
+        self.energie = 1
+        self.stress = 0
+        self.temperature = 0.5
+        self.faim = 0
+        self.soif = 0
+        self.pression_sommeil = 0
+        self.etat: str["normal", "course", "sommeil"] = "normal" 
+
+
+    def calculer_oxygenation(self, etat):
+
+        ...
+
+
+    def maj(self):
+
+        match self.etat:
+            case "normal":
+
 
 
     def __str__(self):
