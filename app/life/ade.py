@@ -571,8 +571,7 @@ class ADE:
 
         match self.etat:
             case "normal":
-
-
+                ...
 
     def __str__(self):
 
