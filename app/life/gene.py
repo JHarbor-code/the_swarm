@@ -5,6 +5,9 @@ from app.life.allele import Allele
 
 
 class Gene: 
+    """
+    Participe à la construction du système biologique de l'individu
+    """
 
     MUTATION_RATE: float = 0.001
     REGISTRY = [
@@ -259,7 +262,7 @@ class Gene:
         return str(self.expression)
     
 
-    
+
 GENES_DICT: dict[str: type(Gene)] = {
     name: type(
         name.title().replace("_", ""), 
