@@ -6,7 +6,104 @@ from app.life.allele import Allele
 
 class Gene: 
 
-    alleles_possibles: list[Allele] = []
+    MUTATION_RATE: float = 0.001
+    REGISTRY = [
+        # === NEURO-TRANSMETTEURS / HORMONES ===
+        'prod_serotonine',
+        'recep_serotonine',
+        'prod_dopamine', 
+        'recep_dopamine', 
+        'prod_testosterone', 
+        'recep_testosterone', 
+        'prod_oxytocine', 
+        'recep_oxytocine',
+        'prod_vasopressine', 
+        'recep_vasopressine', 
+        'prod_cortisol', 
+        'recep_cortisol', 
+        'prod_croissance', 
+        'recep_croissance', 
+        'prod_igf1', 
+        'recep_igf1', 
+        'prod_sexuelles', 
+        'recep_sexuelles', 
+
+        # === STRUCTURES CÉRÉBRALES ===
+        'ratio_cortex_prefrontal_amygdale', 
+        'reactivite_amygdale', 
+        'volume_hippocampe', 
+        'plasticite_synaptique', 
+        'densite_neurones_miroirs', 
+        'traitement_sensoriel_cortical', 
+        'volume_matiere_blanche', 
+
+        # === NEUROPHYSIOLOGIE ===
+        'conductance_nerveuse', 
+        'densite_canaux_ioniques', 
+        'voie_glutamatergique', 
+        'efficacite_jonctions_neuromusculaires', 
+
+        # === MUSCLE / FORCE / MOUVEMENT ===
+        'proportion_fibres_musculaires', 
+        'proportion_fibres_rapides', 
+        'proportion_fibres_lentes', 
+        'section_transversale_muscle', 
+        'masse_musculaire', 
+
+        # === OS / STRUCTURE ===
+        'densite_osseuse', 
+        'taille_osseuse', 
+        'longueur_leviers_osseux', 
+        'elasticite_tissus_conjonctif',
+
+        # === METABOLISME ===
+        'efficacite_mitochondriale', 
+        'taux_metabolique_basal', 
+        'stockage_glycogene', 
+        'stockage_adipeux', 
+        'efficacite_digestive', 
+        'regulation_lactate', 
+
+        # === CARDIO / RESPIRATION ===
+        'capacite_pulmonaire', 
+        'surfactant_pulmonaire', 
+        'structure_pulmonaire', 
+        'efficacite_cardiovasculaire', 
+
+        # === IMMUNITE ===
+        'reactivite_systeme_immunitaire', 
+        'production_anticorps', 
+        'diversite_cmh', 
+        'production_peptides_antimicrobiens', 
+        'regulation_inflammation', 
+        'capacite_reparation_tissulaire', 
+        'reactivite_coagulation', 
+        'barrieres_epitheliales', 
+
+        # === THERMOREGULATION ===
+        'densite_graisse_brune', 
+        'vasoconstriction_peripherique', 
+        'densite_glandes_sudoripares', 
+        'regulation_thermique_active', 
+        
+        # === SENSORIEL ===
+        'densite_photorcepteurs', 
+        'acuite_retinienne', 
+        'sensibilite_cellules_auditives', 
+        'taille_globe_oculaire', 
+        'longueur_telomeres', 
+
+        # === VIE / VIEILLISSEMENT ===
+        'efficacite_reparation_adn', 
+        'resistance_stress_oxydatif', 
+        'autophagie_cellulaire', 
+        'apoptose_cellules_defectueuses', 
+        'production_gametes', 
+        'qualite_gametes', 
+
+        # === COMPORTEMENT ===
+        'maoa'
+        ]
 
     def __init__(self, allele1: Allele, allele2: Allele):
 
@@ -14,6 +111,12 @@ class Gene:
         self.allele2 = allele2
 
         self.expression = self.calculer_expression()
+
+    def __init_subclass__(cls, **kwargs):
+
+        super().__init_subclass__(**kwargs)
+        cls.alleles_possibles = []
+
 
     @classmethod
     def creer_fondateurs(cls) -> "Gene":
@@ -82,7 +185,7 @@ class Gene:
             nb = sum(1 for a in cls.alleles_possibles if a.name.startswith("a"))
             name = f"a{nb}" if nb > 0 else "a"
 
-        if parent:
+        if parent is not None:
             dominance = np.clip(
                 parent.dominance + np.random.normal(0, 0.1),
                 0, 1
@@ -137,7 +240,7 @@ class Gene:
             Allele : l'instance de la classe allele qui a muté ou pas
         """
 
-        if np.random.random() < 0.001:
+        if np.random.random() < cls.MUTATION_RATE:
             valeur = np.clip(
             allele.valeur + np.random.normal(0, 0.05),
             0, 1
@@ -155,253 +258,10 @@ class Gene:
 
         return str(self.expression)
 
+for name in Gene.REGISTRY:
 
+    cls = type(
+        name.title().replace("_", ""), (Gene,), {"alleles_possibles" : []}
+    )
+    globals()[cls.__name__] = cls   
 
-
-# === NEURO-TRANSMETTEURS / HORMONES ===
-
-class ProdSerotonine(Gene):
-    alleles_possibles = []
-
-class RecepSerotonine(Gene):
-    alleles_possibles = []
-
-class ProdDopamine(Gene):
-    alleles_possibles = []
-
-class RecepDopamine(Gene):
-    alleles_possibles = []
-
-class ProdTestosterone(Gene):
-    alleles_possibles = []
-
-class RecepTestosterone(Gene):
-    alleles_possibles = []
-
-class ProdOcytocine(Gene):
-    alleles_possibles = []
-
-class RecepOcytocine(Gene):
-    alleles_possibles = []
-
-class ProdVasopressine(Gene):
-    alleles_possibles = []
-
-class RecepVasopressine(Gene):
-    alleles_possibles = []
-
-class ProdCortisol(Gene):
-    alleles_possibles = []
-
-class RecepCortisol(Gene):
-    alleles_possibles = []
-
-class ProdCroissance(Gene):
-    alleles_possibles = []
-
-class RecepCroissance(Gene):
-    alleles_possibles = []
-    
-class ProdIGF1(Gene):
-    alleles_possibles = []
-
-class RecepIGF1(Gene):
-    alleles_possibles=[]
-
-class ProdSexuelles(Gene):
-    alleles_possibles = []
-
-class RecepSexuelles(Gene):
-    alleles_possibles = []
-
-
-# === STRUCTURE CEREBRALE ===
-class DensiteGraisseBrune(Gene):
-    alleles_possibles = []
-
-class VasoconstrictionPeripherique(Gene):
-    alleles_possibles = []
-
-class DensiteGlandesSudoripares(Gene):
-    alleles_possibles = []
-
-class RegulationThermiqueActive(Gene):
-    alleles_possibles = []
-
-class RatioCortexPrefrontalAmygdale(Gene):
-    alleles_possibles = []
-
-class ReactiviteAmygdale(Gene):
-    alleles_possibles = []
-
-class VolumeHippocampe(Gene):
-    alleles_possibles = []
-
-class PlasticiteSynaptique(Gene):
-    alleles_possibles = []
-
-class DensiteNeuronesMiroirs(Gene):
-    alleles_possibles = []
-
-class TraitementSensorielCortical(Gene):
-    alleles_possibles = []
-
-class VolumeMatiereBlanche(Gene):
-    alleles_possibles = []
-
-DensiteGraisseBrune
-# === NEUROPHYSIOLOGIE ===
-
-class ConductanceNerveuse(Gene):
-    alleles_possibles = []
-
-class DensiteCanauxIoniques(Gene):
-    alleles_possibles = []
-
-class VoieGlutamatergique(Gene):
-    alleles_possibles = []
-
-class EfficaciteJonctionsNeuromusculaires(Gene):
-    alleles_possibles = []
-
-
-# === MUSCLE / FORCE / MOUVEMENT ===
-
-class ProportionFibresMusculaires(Gene):
-    alleles_possibles = []
-
-class ProportionFibresRapides(Gene):
-    alleles_possibles = []
-
-class ProportionFibresLentes(Gene):
-    alleles_possibles = []
-
-class SectionTransversaleMuscle(Gene):
-    alleles_possibles = []
-
-class MasseMusculaire(Gene):
-    alleles_possibles = []
-
-
-# === OS / STRUCTURE / TAILLE === 
-
-class DensiteOsseuse(Gene):
-    alleles_possibles = []
-
-class TailleOsseuse(Gene):
-    alleles_possibles = []
-
-class LongueurLeviersOsseux(Gene):
-    alleles_possibles = []
-
-class ElasticiteTissusConjonctif(Gene):
-    alleles_possibles = []
-
-
-# === METABOLISME ===
-
-class EfficaciteMitochondriale(Gene):
-    alleles_possibles = []
-
-class TauxMetaboliqueBasal(Gene):
-    alleles_possibles = []
-
-class StockageGlycogene(Gene):
-    alleles_possibles = []
-
-class StockageAdipeux(Gene):
-    alleles_possibles = []
-
-class EfficaciteDigestive(Gene):
-    alleles_possibles = []
-
-class RegulationLactate(Gene):
-    alleles_possibles = []
-
-
-# === CARDIO / RESPIRATION ===
-
-class CapacitePulmonaire(Gene):
-    alleles_possibles = []
-
-class SurfactantPulmonaire(Gene):
-    alleles_possibles = []
-
-class StructurePulmonaire(Gene):
-    alleles_possibles = []
-
-class EfficaciteCardiovasculaire(Gene):
-    alleles_possibles = []
-
-
-# === IMMUNITE ===
-
-class ReactiviteSystemeImmunitaire(Gene):
-    alleles_possibles = []
-
-class ProductionAnticorps(Gene):
-    alleles_possibles = []
-
-class DiversiteCMH(Gene):
-    alleles_possibles = []
-
-class ProductionPeptidesAntimicrobiens(Gene):
-    alleles_possibles = []
-
-class RegulationInflammation(Gene):
-    alleles_possibles = []
-
-class CapaciteReparationTissulaire(Gene):
-    alleles_possibles = []
-
-class ReactiviteCoagulation(Gene):
-    alleles_possibles = []
-
-class BarrieresEpithéliales(Gene):
-    alleles_possibles = [] 
-
-
-# === SENSORIELS ===
-
-class DensitePhotorcepteurs(Gene):
-    alleles_possibles = []
-
-class AcuiteRetinienne(Gene):
-    alleles_possibles = []
-
-class SensibiliteCellulesAuditives(Gene):
-    alleles_possibles = []
-
-class TailleGlobeOculaire(Gene):
-    alleles_possibles = []
-
-
-# === VIE ===
-
-class LongueurTelomeres(Gene):
-    alleles_possibles = []
-
-class EfficaciteReparationADN(Gene):
-    alleles_possibles = []
-
-class ResistanceStressOxydatif(Gene):
-    alleles_possibles = []
-
-class AutophagieCellulaire(Gene):
-    alleles_possibles = []
-
-class ApoptoseCellulesDefectueuses(Gene):
-    alleles_possibles = []
-
-class ProductionGametes(Gene):
-    alleles_possibles = []
-
-class QualiteGametes(Gene):
-    alleles_possibles = []
-
-
-
-# === COMPORTEMENT === 
-
-class MAOA(Gene):
-    alleles_possibles = []

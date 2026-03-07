@@ -3,126 +3,7 @@ import app.life.gene as gn
 from pydantic import BaseModel, ValidationError
 
 
-class GenesDict(BaseModel):
 
-    model_config = {
-        "arbitrary_types_allowed": True 
-    }
-
-    # Neurotransmetteurs & hormones
-    prod_serotonine: gn.ProdSerotonine
-    recep_serotonine: gn.RecepSerotonine
-    prod_dopamine: gn.ProdDopamine
-    recep_dopamine: gn.RecepDopamine
-    prod_testosterone: gn.ProdTestosterone
-    recep_testosterone: gn.RecepTestosterone
-    prod_oxytocine: gn.ProdOcytocine
-    recep_oxytocine: gn.RecepOcytocine
-    prod_vasopressine: gn.ProdVasopressine
-    recep_vasopressine: gn.RecepVasopressine
-    prod_cortisol: gn.ProdCortisol
-    recep_cortisol: gn.RecepCortisol
-    prod_croissance: gn.ProdCroissance
-    recep_croissance: gn.RecepCroissance
-    prod_igf1: gn.ProdIGF1
-    recep_igf1: gn.RecepIGF1
-    prod_sexuelles: gn.ProdSexuelles
-    recep_sexuelles: gn.RecepSexuelles
-
-
-    # Structures cérébrales & traitement
-    ratio_cortex_prefrontal_amygdale: gn.RatioCortexPrefrontalAmygdale
-    reactivite_amygdale: gn.ReactiviteAmygdale
-    volume_hippocampe: gn.VolumeHippocampe
-    plasticite_synaptique: gn.PlasticiteSynaptique
-    densite_neurones_miroirs: gn.DensiteNeuronesMiroirs
-    traitement_sensoriel_cortical: gn.TraitementSensorielCortical
-    volume_matiere_blanche: gn.VolumeMatiereBlanche
-
-    # Neurophysiologie
-    conductance_nerveuse: gn.ConductanceNerveuse
-    densite_canaux_ioniques: gn.DensiteCanauxIoniques
-    voie_glutamatergique: gn.VoieGlutamatergique
-    efficacite_jonctions_neuromusculaires: gn.EfficaciteJonctionsNeuromusculaires
-
-    # Muscle, force, mouvement
-    proportion_fibres_musculaires: gn.ProportionFibresMusculaires
-    proportion_fibres_rapides: gn.ProportionFibresRapides
-    proportion_fibres_lentes: gn.ProportionFibresLentes
-    section_transversale_muscle: gn.SectionTransversaleMuscle
-    masse_musculaire: gn.MasseMusculaire
-
-    # Os, structure, taille
-    densite_osseuse: gn.DensiteOsseuse
-    taille_osseuse: gn.TailleOsseuse
-    longueur_leviers_osseux: gn.LongueurLeviersOsseux
-    elasticite_tissus_conjonctif: gn.ElasticiteTissusConjonctif
-
-    # Métabolisme & énergie
-    efficacite_mitochondriale: gn.EfficaciteMitochondriale
-    taux_metabolique_basal: gn.TauxMetaboliqueBasal
-    stockage_glycogene: gn.StockageGlycogene
-    stockage_adipeux: gn.StockageAdipeux
-    efficacite_digestive: gn.EfficaciteDigestive
-    regulation_lactate: gn.RegulationLactate
-
-    # Cardio / respiration
-    capacite_pulmonaire: gn.CapacitePulmonaire
-    surfactant_pulmonaire: gn.SurfactantPulmonaire
-    structure_pulmonaire: gn.StructurePulmonaire
-    efficacite_cardiovasculaire: gn.EfficaciteCardiovasculaire
-
-    # Immunité & réparation
-    reactivite_systeme_immunitaire: gn.ReactiviteSystemeImmunitaire
-    production_anticorps: gn.ProductionAnticorps
-    diversite_cmh: gn.DiversiteCMH
-    production_peptides_antimicrobiens: gn.ProductionPeptidesAntimicrobiens
-    regulation_inflammation: gn.RegulationInflammation
-    capacite_reparation_tissulaire: gn.CapaciteReparationTissulaire
-    reactivite_coagulation: gn.ReactiviteCoagulation
-    barrieres_épithéliales: gn.BarrieresEpithéliales
-
-    # Thermorégulation
-    densite_graisse_brun: gn.DensiteGraisseBrune
-    vasoconstriction_peripherique: gn.VasoconstrictionPeripherique
-    densite_glandes_sudoripares: gn.DensiteGlandesSudoripares
-    regulation_thermique_active: gn.RegulationThermiqueActive
-
-    # Sensoriel
-    densite_photorcepteurs: gn.DensitePhotorcepteurs
-    acuite_retinienne: gn.AcuiteRetinienne
-    sensibilite_cellules_auditives: gn.SensibiliteCellulesAuditives
-    taille_globe_oculaire: gn.TailleGlobeOculaire
-
-    # Vie, vieillissement, fertilité
-    longueur_telomeres: gn.LongueurTelomeres
-    efficacite_reparation_adn: gn.EfficaciteReparationADN
-    resistance_stress_oxydatif: gn.ResistanceStressOxydatif
-    autophagie_cellulaire: gn.AutophagieCellulaire
-    apoptose_cellules_defectueuses: gn.ApoptoseCellulesDefectueuses
-    production_gametes: gn.ProductionGametes
-    qualite_gametes: gn.QualiteGametes
-
-    # Psycho-comportemental
-    maoa: gn.MAOA
-
-    @classmethod
-    def set_gene(cls, parent1: "GenesDict" = None, parent2: "GenesDict" = None, fondateur=False):
-        fields = {}  
-
-        if fondateur:
-            for name, type_ in cls.__annotations__.items():
-                fields[name] = type_.creer_fondateurs()
-        else:
-            for name, type_ in cls.__annotations__.items():
-                g1 = getattr(parent1, name)
-                g2 = getattr(parent2, name)
-                fields[name] = type_.heriter(g1, g2)
-
-        return cls(**fields)
-    
-    def __repr__(self):
-        return "\n".join(f"{k}: {v}" for k, v in self.model_dump().items())
 
 
 
@@ -193,6 +74,7 @@ class ADE:
                 self.genes.prod_vasopressine.expression,
                 self.genes.recep_vasopressine.expression 
             ),
+            
             poids=(
                 0.7,
                 0.7,
@@ -395,7 +277,7 @@ class ADE:
                 self.genes.reactivite_systeme_immunitaire.expression,
                 self.genes.production_anticorps.expression,
                 self.genes.diversite_cmh.expression,
-                self.genes.barrieres_épithéliales.expression,
+                self.genes.barrieres_epitheliales.expression,
                 self.genes.production_peptides_antimicrobiens.expression,
                 self.genes.regulation_inflammation.expression
             ),
