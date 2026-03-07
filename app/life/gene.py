@@ -1,12 +1,7 @@
-from dataclasses import dataclass
 import numpy as np
+from app.life.allele import Allele
 
 
-@dataclass
-class Allele:
-    name: str
-    valeur: float
-    dominance: float
 
 
 class Gene: 
