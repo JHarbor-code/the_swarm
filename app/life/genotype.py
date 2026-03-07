@@ -1,18 +1,16 @@
 from typing import Optional
-import app.life.gene as gn
+import app.life.gene as gene
 
 class Genotype:
 
-    GENES: dict[str: gn.Gene] = gn.Gene.REGISTRY
-
-
+    GENES: dict[str, type[gene.Gene]] = gene.GENES_DICT
 
     def __init__(self, parent1: Optional["Genotype"]=None, parent2: Optional["Genotype"]=None):
 
-        self.genotype: dict[str: gn.Gene] = self.build_genotype(parent1, parent2)
+        self.genotype: dict[str: gene.Gene] = self.build_genotype(parent1, parent2)
 
     @classmethod
-    def build_genotype(cls, parent1: Optional["Genotype"] = None, parent2: Optional["Genotype"] = None) -> dict[str: gn.Gene]:
+    def build_genotype(cls, parent1: Optional["Genotype"] = None, parent2: Optional["Genotype"] = None) -> dict[str, gene.Gene]:
         
         if parent1 and parent2:
 

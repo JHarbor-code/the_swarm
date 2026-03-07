@@ -257,11 +257,14 @@ class Gene:
     def __str__(self):
 
         return str(self.expression)
+    
 
-for name in Gene.REGISTRY:
-
-    cls = type(
-        name.title().replace("_", ""), (Gene,), {"alleles_possibles" : []}
+    
+GENES_DICT: dict[str: type(Gene)] = {
+    name: type(
+        name.title().replace("_", ""), 
+        (Gene,), 
+        {"alleles_possibles" : []}
     )
-    globals()[cls.__name__] = cls   
-
+    for name in Gene.REGISTRY
+} 
