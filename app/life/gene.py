@@ -1,7 +1,6 @@
 import numpy as np
 from app.life.allele import Allele
-
-
+import random
 
 
 class Gene: 

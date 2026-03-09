@@ -9,10 +9,63 @@ Aussi, il est important de noter quand dans une visée de simplification du mod�
 
 *tendance à attaquer* 
 
-Genes : 
+Systèmes biologiques : 
+* domination (+)
+    
+    prod_testosterone (+)
+    recep_testosterone (+)
+    prod_dopamine (+)
+    recep_dopamine (+)
 
-* prod_testosterone (poids: 0.7)
-* recep_testosterone (0.7)
+* compétitivité (+)
+
+    prod_dopamine (+)
+    recep_dopamine (+)
+    prod_serotonine (-) 
+    recep_serotonine (-)
+
+* stress (+)
+
+    prod_cortisol(+)
+    recep_cortisol(+)
+    prod_serotonine (-) 
+    recep_serotonine (-)
+
+* impulsivité (+)
+
+    prod_dopamine (+)
+    recep_dopamine (+)
+    ratio_cortex_prefrontal_amygdale (-)
+    prod_serotonine (-) 
+    recep_serotonine (-)
+
+* empathie (-)
+
+    prod_oxytocine (+)
+    recep_oxytocine (+)
+    densite_neurones_miroirs (+)
+    prod_testosterone (-)
+    recep_testosterone (-)
+
+* motivation sociale (-)
+
+    prod_oxytocine (+)
+    recep_oxytocine (+)
+    prod_dopamine (+)
+    recep_dopamine (+)
+    prod_cortisol(-)
+    recep_cortisol(-)
+
+* peur_ressentie (+)
+
+    ratio_cortex_prefrontal_amygdale (+)
+    reactivite_amygdale (+)
+    prod_cortisol(+)
+    recep_cortisol(+)
+    prod_serotonine (-) 
+    recep_serotonine (-)
+
+
 * prod_serotonine (-0.7)
 * recep_serotonine (-0.7)
 * ratio_cortex_prefrontal_amygdale (0.4)
@@ -26,9 +79,24 @@ Genes :
 
 *tendance à rester groupé*
 
+Systèmes biologiques : 
+* motivation sociale (+)
+* empathie (+)
+* reconnaissance emotions (+)
+* anxiete sociale (-)
+* peur du rejet (-)
+* stress (-)
+
 **1.3 Altruisme**
 
 *tendance à donner* 
+
+Systèmes biologiques : 
+* empathie (+)
+* compréhension (+)
+* niveau aspiration (-)
+* anxiete sociale (-)
+* peur du rejet (-)
 
 Genes : 
 
