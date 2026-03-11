@@ -18,7 +18,12 @@ class SystemBio:
                 "prod_oxytocine" : -0.5,
                 "recep_oxytocine" : -0.4
         },
-        "competitivite" :"",
+        "competitivite" : {
+            "prod_dopamine" : 0.6,
+            "recep_dopamine" : 0.5,
+            "prod_serotonine" : 0.5,
+            "recep_serotonine" : 0.4
+        },
         "stress_ressentit" :"",
         "impulsivite":"",
         "empathie":"",
@@ -34,6 +39,12 @@ class SystemBio:
     def __init__(self, genotype: Genotype):
             
         self.genotype: Genotype = genotype
+        self.GENE_INDEX = {g:i for i,g in enumerate(Gene.REGISTRY)}
+
+        nb_micro = len(self._MICRO_COMPORTEMENTS_FORMULE)
+        nb_genes = len(self.GENE_INDEX)
+        self.W = np.zeros((nb_micro, nb_genes))
+
 
 
 
@@ -41,14 +52,10 @@ class SystemBio:
     def calculer_expression(self, genes: np.ndarray, bruit=True) -> tuple:
 
 
-        nb_micro = len(self._MICRO_COMPORTEMENTS_FORMULE)
-        nb_genes = len(Gene.REGISTRY)
-        W = np.zeros((nb_micro, nb_genes))
-
         for i, (micro, influence) in enumerate(self._MICRO_COMPORTEMENTS_FORMULE.items()):
             for gene, poids in influence.items():
-                j = Gene.REGISTRY.index(gene)
-                W[i, j] = poids
+                j = self.GENE_INDEX[gene]
+                self.W[i, j] = poids
 
 
         

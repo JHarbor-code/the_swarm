@@ -24,7 +24,7 @@ class Genotype:
 
 
         return {
-            gene_name: gene_cls.creer_fondateurs()
+            gene_name: gene_cls.creer_gene_fondateur()
             for gene_name, gene_cls in cls.GENES.items()
         }
 

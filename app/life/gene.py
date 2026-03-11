@@ -1,15 +1,13 @@
 import numpy as np
 from app.life.allele import Allele
-import random
-
 
 class Gene: 
     """
     Participe à la construction du système biologique de l'individu
     """
 
-    MUTATION_RATE: float = 0.001
-    REGISTRY = [
+    CHANCE_MUTATION: float = 0.001
+    REGISTRE = [
         # === NEURO-TRANSMETTEURS / HORMONES ===
         'prod_serotonine',
         'recep_serotonine',
@@ -108,46 +106,33 @@ class Gene:
         ]
 
     def __init__(self, allele1: Allele, allele2: Allele):
+        """
+        Définit allele1 et allele2, définit expression en appelant calculer_expression
+        
+        Args:
+            allele1 (Allele)
+            allele2 (Allele)
+        """
 
         self.allele1 = allele1
         self.allele2 = allele2
-
-        self.expression = self.calculer_expression()
+        self.expression = self._calculer_expression()
 
     def __init_subclass__(cls, **kwargs):
+        """
+        Définit l'attribut alleles_possibles des sous-classes
+        """
 
         super().__init_subclass__(**kwargs)
         cls.alleles_possibles = []
 
-
-    @classmethod
-    def creer_fondateurs(cls) -> "Gene":
-
-        if not cls.alleles_possibles:
-            liste = []
-            for _ in range(np.random.randint(3, 8)):
-                
-                valeur = np.random.beta(2, 2)
-
-                liste.append(valeur)
-
-            for valeur in liste:
-                cls.ajouter_allele(valeur=valeur)
-
-        return cls(
-            np.random.choice(cls.alleles_possibles),
-            np.random.choice(cls.alleles_possibles)
-        )
-
-
-    def calculer_expression(self) -> float:
+    def _calculer_expression(self) -> float:
         """
-        Calcule l'expression du gène en prenant en code une forme de dominance linéaire entre allèles (attribut `dominance`)
-
-        Returns: 
-            float: l'expression du gène comprise entre 0 et 1
+        Calcule l'expression du gène en prenant en compte une forme de dominance linéaire entre allèles (attribut  `dominance`) 
+        Use-case : calculer l'expression du gène à l'instanciation de la classe
         
-        :param self: Description
+        Returns :
+            float
         """
         
         a1, a2 = self.allele1, self.allele2
@@ -159,24 +144,71 @@ class Gene:
 
         h = alt.dominance
 
-        return round(ref.valeur + h * (alt.valeur - ref.valeur), 2)
-    
-        
+        return ref.valeur + h * (alt.valeur - ref.valeur)
+
     @classmethod
-    def ajouter_allele(cls, valeur: float, parent:Allele | None = None) -> Allele:
+    def creer_gene_fondateur(cls) -> "Gene":
         """
-        Ajoute un nouvel allèle à la liste de classe `alleles_possibles` en générant un nom automatiquement.
+        Crée un objet Gene dans le cas ou aucun parent n'est spécifié
+        Crée les deux allèles du gène si moins de 2 allèles existent dans alleles_possibles
+        Use-case : commencement de la simulation, création instantanée d'un individu
 
+        Returns : 
+            Gene
+        """
+
+        if len(cls.alleles_possibles) < 2:
+            liste = []
+            for _ in range(np.random.randint(3, 8)):
+                
+                valeur = np.random.beta(2, 2)
+
+                liste.append(valeur)
+
+            for valeur in liste:
+                cls._ajouter_allele(valeur=valeur)
+
+        return cls(
+            np.random.choice(cls.alleles_possibles),
+            np.random.choice(cls.alleles_possibles)
+        )
+
+    @classmethod
+    def heriter(cls, gene1: "Gene", gene2: "Gene") -> "Gene":
+
+        """
+        Crée un objet Gene
+        Sélectionne aléatoirement les deux allèles à partir des quatre allèles des parents en appliquant une chance de mutation
+        Use-case : naissance d'un individu à partir de parent
+
+        Returns : 
+            Gene
+        """
+
+        allele_p1 = cls._get_random_allele(gene1.allele1, gene1.allele2)
+        allele_p2 = cls._get_random_allele(gene2.allele1, gene2.allele2)
+
+
+        allele_p1 = cls._mutation(allele_p1)
+        allele_p2 = cls._mutation(allele_p2)
+
+        return cls(allele_p1, allele_p2)
+    
+    @classmethod
+    def _ajouter_allele(cls, valeur: float, parent:Allele | None = None) -> Allele:
+        """
+        Ajoute un nouvel allèle à la liste de classe alleles_possibles en générant un nom automatiquement
         Le nom de l'allèle est choisi dynamiquement selon sa valeur :
-        - supérieure à 0.5 → commence par "A"
-        - inférieure ou égale à 0.5 → commence par "a"
+            - supérieure à 0.5 → commence par "A"
+            - inférieure ou égale à 0.5 → commence par "a"
         Un suffixe numérique est ajouté si plusieurs allèles du même type existent.
+        Use-case : ajouter une allèle qui vient d'être créée dans la liste `alleles_possibles`
+        
+        Args :
+            valeur (float)
 
-        Args:
-            valeur (float): La valeur de l'allèle, comprise entre 0 et 1.
-
-        Returns:
-            Allele: L'instance d'`Allele` créée et ajoutée à `cls.alleles_possibles`.
+        Returns : 
+            Allele : l'instance d'Allele créée et ajoutée à cls.alleles_possibles
         """
 
         if valeur > 0.5:
@@ -193,7 +225,7 @@ class Gene:
                 0, 1
             )
         else:
-            # centré autour de 5 (codominant) par défaut
+            # centré autour de 0.5 (codominant) par défaut
             dominance = np.random.beta(3, 3)
 
         allele = Allele(name, valeur, dominance)
@@ -201,54 +233,44 @@ class Gene:
         cls.alleles_possibles.append(allele)
 
         return allele
-
-    @classmethod
-    def heriter(cls, gene1: "Gene", gene2: "Gene") -> "Gene":
-        """
-        Gère l'héritage des gènes selon l'héritage biparental. 
-        
-        Args:
-            gene1 (Gene) : le gène du parent 1 dont on utilisera les allèles
-            gene2 (Gene) : le gène du parent 2 dont on utilisera les allèles
-
-        Returns: 
-            Gene: la nouvelle instance de `Gene` utilisable par l'enfant 
-        """
-
-        allele_p1 = cls.get_random_allele(gene1.allele1, gene1.allele2)
-        allele_p2 = cls.get_random_allele(gene2.allele1, gene2.allele2)
-
-
-        allele_p1 = cls.mutation(allele_p1)
-        allele_p2 = cls.mutation(allele_p2)
-
-        return cls(allele_p1, allele_p2)
     
     @staticmethod
-    def get_random_allele(allele1, allele2):
+    def _get_random_allele(allele1: Allele, allele2: Allele) -> Allele:
+        """
+        Choisit aléatoirement un allèle entre deux allèles passés en arguments
+        Probabilité : 1/2
+        Use-case : sélectionner les allèles parents aléatoirement dans heriter
+        
+        Args : 
+            allele1 (Allele)
+            allele2 (Allele)
+        
+        Returns : 
+            Allele
+        """
 
         return allele1 if np.random.random() < 0.5 else allele2
 
     @classmethod
-    def mutation(cls, allele: Allele) -> Allele:
+    def _mutation(cls, allele: Allele) -> Allele:
         """
-        Calcule une chance de mutation pour chaque allèle. 
-        La probabilité de mutation est de : 1/1000
+        Applique une chance de mutation à un allèle (CHANCE_MUTATION) et l'ajoute si muté à la liste de classe `alleles_possibles`. La valeur de l'allèle ainsi que sa dominance mutent. 
+        Use-case : Calculer une chance de mutation pour l'allèle transmise par les parents lors de la reproduction
         
-        Args: 
-            allele (Allele) : l'instance de la classe `Alelle` pouvant muter 
+        Args :
+            allele (Allele) : l'instance de la classe `Alelle` pouvant muter
 
-        Return : 
+        Returns : 
             Allele : l'instance de la classe allele qui a muté ou pas
         """
 
-        if np.random.random() < cls.MUTATION_RATE:
+        if np.random.random() < cls.CHANCE_MUTATION:
             valeur = np.clip(
             allele.valeur + np.random.normal(0, 0.05),
             0, 1
         )
             
-            return cls.ajouter_allele(
+            return cls._ajouter_allele(
                 valeur = valeur,
                 parent = allele
             )
@@ -256,17 +278,24 @@ class Gene:
         else: 
             return allele
 
-    def __str__(self):
+    def __str__(self) -> str:
+        """
+        Affiche une version lisible du gène, de la forme : 
+        Expression : 0.5
 
-        return str(self.expression)
+        Returns: 
+            str
+        """
+
+        return f"Expression : {self.expression}"
     
 
 
-GENES_DICT: dict[str: type(Gene)] = {
+GENES_DICT: dict[str: type[Gene]] = {
     name: type(
         name.title().replace("_", ""), 
         (Gene,), 
-        {"alleles_possibles" : []}
+        {}
     )
-    for name in Gene.REGISTRY
+    for name in Gene.REGISTRE
 } 
