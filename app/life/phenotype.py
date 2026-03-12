@@ -1,9 +1,10 @@
 import numpy as np
 from app.life.genotype import Genotype
 from app.life.gene import Gene
+from app.life.micro_comportements import MicroComportements
 
 
-class SystemBio:
+class Phenotype:
     """
     Classe contenant l'expression des caractères de l'individu exprimé génétiquement pour servir de base au calcul du phénotype. 
     Certains attributs font aussi partit du phénotype, mais ne sont ici représentés que génétiquement 
@@ -36,7 +37,7 @@ class SystemBio:
         "niveau_aspiration":""
     } 
 
-    def __init__(self, genotype: Genotype):
+    def __init__(self, micro_comportements: MicroComportements, etat):
             
         self.genotype: Genotype = genotype
         self.GENE_INDEX = {g:i for i,g in enumerate(Gene.REGISTRY)}
@@ -80,84 +81,16 @@ class SystemBio:
             expression_genes = np.array([self.genotype[e].expression for e in valeurs["genes"]])
             poids_genes = np.array(valeurs["poids"])
 
-            micro_comportements[noms] = self.calculer_expression(genes=expression_genes, poids=poids_genes)
+            micro_comportements[nom] = self.calculer_expression(genes=expression_genes, poids=poids_genes)
 
-        return micro_comportements
+        return micro_comportements        
 
-            
 
 
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        phenotype["agressivite"] = self.calculer_phenotype(
+phenotype["agressivite"] = self.calculer_phenotype(
             genes=(
                 self.genes.prod_testosterone.expression,
                 self.genes.recep_testosterone.expression,
@@ -548,7 +481,3 @@ class SystemBio:
         )
 
         return phenotype
-    
-
-
-

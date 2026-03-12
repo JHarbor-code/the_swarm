@@ -3,7 +3,7 @@ from app.life.allele import Allele
 
 class Gene: 
     """
-    Participe à la construction du système biologique de l'individu
+    Modélisation un gène.
     """
 
     CHANCE_MUTATION: float = 0.001
