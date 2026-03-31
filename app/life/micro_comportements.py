@@ -39,7 +39,7 @@ class MicroComportements:
     def __init__(self, genotype: Genotype):
             
         self.genotype: Genotype = genotype
-        self.GENE_INDEX = {g:i for i,g in enumerate(Gene.REGISTRY)}
+        self.GENE_INDEX = {g:i for i,g in enumerate(Gene.REGISTRE)}
 
         nb_micro = len(self._MICRO_COMPORTEMENTS_FORMULE)
         nb_genes = len(self.GENE_INDEX)
@@ -59,7 +59,7 @@ class MicroComportements:
 
 
         
-        score = W @ genes
+        score = self.W @ genes
         
         if bruit:
             # action hypothétique d'autres gènes non-représentés 
