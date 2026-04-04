@@ -7,10 +7,10 @@ class Genotype:
 
     def __init__(self, parent1: Optional["Genotype"]=None, parent2: Optional["Genotype"]=None):
 
-        self.genotype: dict[str: gene.Gene] = self.build_genotype(parent1, parent2)
+        self.genotype: dict[str: gene.Gene] = self._build_genotype(parent1, parent2)
 
     @classmethod
-    def build_genotype(cls, parent1: Optional["Genotype"] = None, parent2: Optional["Genotype"] = None) -> dict[str, gene.Gene]:
+    def _build_genotype(cls, parent1: Optional["Genotype"] = None, parent2: Optional["Genotype"] = None) -> dict[str, gene.Gene]:
         
         if parent1 and parent2:
 

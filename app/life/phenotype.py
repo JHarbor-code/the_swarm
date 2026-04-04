@@ -1,7 +1,6 @@
 import numpy as np
 from app.life.genotype import Genotype
 from app.life.gene import Gene
-from app.life.micro_comportements import MicroComportements
 
 
 class Phenotype:
@@ -37,14 +36,53 @@ class Phenotype:
         "niveau_aspiration":""
     } 
 
-    def __init__(self, micro_comportements: MicroComportements, etat):
+    def __init__(self, genotype: Genotype):
             
         self.genotype: Genotype = genotype
-        self.GENE_INDEX = {g:i for i,g in enumerate(Gene.REGISTRY)}
+        self.GENE_INDEX = {g:i for i,g in enumerate(Gene.REGISTRE)}
 
         nb_micro = len(self._MICRO_COMPORTEMENTS_FORMULE)
         nb_genes = len(self.GENE_INDEX)
         self.W = np.zeros((nb_micro, nb_genes))
+
+
+
+
+
+    def calculer_expression(self, genes: np.ndarray, bruit=True) -> tuple:
+
+
+        for i, (micro, influence) in enumerate(self._MICRO_COMPORTEMENTS_FORMULE.items()):
+            for gene, poids in influence.items():
+                j = self.GENE_INDEX[gene]
+                self.W[i, j] = poids
+
+
+        
+        score = self.W @ genes
+        
+        if bruit:
+            # action hypothétique d'autres gènes non-représentés 
+            score += np.random.normal(0, 0.05, size=score.shape)
+
+        score = 1 / (1 + np.exp(-score))
+
+
+        return tuple(score)
+    
+
+    def construire_systeme(self):
+        
+        micro_comportements = {}
+
+        for nom, valeurs in self._MICRO_COMPORTEMENTS_FORMULE.items(): 
+
+            expression_genes = np.array([self.genotype[e].expression for e in valeurs["genes"]])
+            poids_genes = np.array(valeurs["poids"])
+
+            micro_comportements[nom] = self.calculer_expression(genes=expression_genes, poids=poids_genes)
+
+        return micro_comportements
 
 
 
