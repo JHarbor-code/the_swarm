@@ -9,32 +9,28 @@ class Phenotype:
     Certains attributs font aussi partit du phénotype, mais ne sont ici représentés que génétiquement 
     """
 
-    _MICRO_COMPORTEMENTS_FORMULE = {
-        "domination": {
-                "prod_testosterone" : 0.6,
-                "recep_testosterone" : 0.5,
-                "prod_dopamine" : 0.5,
-                "recep_dopamine" : 0.4,
-                "prod_oxytocine" : -0.5,
-                "recep_oxytocine" : -0.4
-        },
-        "competitivite" : {
-            "prod_dopamine" : 0.6,
-            "recep_dopamine" : 0.5,
-            "prod_serotonine" : 0.5,
-            "recep_serotonine" : 0.4
-        },
-        "stress_ressentit" :"",
-        "impulsivite":"",
-        "empathie":"",
-        "motivation_sociale":"",
-        "peur_ressentie":"",
-        "reconnaissance_emotions":"",
-        "anxiete_sociale":"",
-        "peur_rejet":"", 
-        "compréhension":"",
-        "niveau_aspiration":""
-    } 
+    _EXPRESSION_PHENOTYPES = {
+        "agressivite": "...",
+        "sociabilité": "...",
+        "altruisme": "...",
+        "curiosité": "...",
+        "courage": "...",
+        "peur": "...",
+        "rancune": "...",
+        "force": "...",
+        "taille": "...",
+        "masse": "...",
+        "vitesse": "...",
+        "endurance": "...",
+        "resistance_coups": "...",
+        "immunité": "...",
+        "regulation_temperature": "...",
+        "memoire": "...",
+        "cout_energetique": "...",
+        "fertilite": "...",
+        "temps_de_reaction": "...",
+        "distance_detection": "...",
+    }
 
     def __init__(self, genotype: Genotype):
             
