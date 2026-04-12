@@ -114,9 +114,7 @@ class Gene:
             allele2 (Allele)
         """
 
-        self.allele1 = allele1
-        self.allele2 = allele2
-        self.expression = self._calculer_expression()
+        self.expression = self._calculer_expression(allele1, allele2)
 
     def __init_subclass__(cls, **kwargs):
         """
@@ -126,16 +124,18 @@ class Gene:
         super().__init_subclass__(**kwargs)
         cls.alleles_possibles = []
 
-    def _calculer_expression(self) -> float:
+    def _calculer_expression(self, a1: Allele, a2:Allele) -> float:
         """
         Calcule l'expression du gène en prenant en compte une forme de dominance linéaire entre allèles (attribut  `dominance`) 
         Use-case : calculer l'expression du gène à l'instanciation de la classe
         
+        Args: 
+            a1 (Allele) : l'allèle du parent 1
+            a2 (Allele) : l'allèle du parent 2
+            
         Returns :
             float
         """
-        
-        a1, a2 = self.allele1, self.allele2
 
         if a1.valeur <= a2.valeur:
             ref, alt = a1, a2
